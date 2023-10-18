@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "ken-project"
 version = "0.1.0"
-description = ""
+description = "ken-project is a test project to create a simple python library within a Poetry virtual environment"
 authors = ["Silvia Pasciullo <pasciullo.s@gmail.com>"]
 readme = "README.md"
 
