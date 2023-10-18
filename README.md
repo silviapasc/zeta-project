@@ -5,6 +5,4 @@
 + initialize the _project-name_ folder in git
 + open the _project-name_ folder in in PyCharm and activate the Poetry venv (automatically set by PyCharm)
 + push to the remote collection
- 
-
 + digit _deactivate_ to simply deactivate the Poetry venv
