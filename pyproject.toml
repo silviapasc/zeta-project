@@ -6,7 +6,9 @@ authors = ["Silvia Pasciullo <pasciullo.s@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = ">=3.10,<3.13"
+pytest = "^7.4.2"
+pandas = "^2.1.1"
 
 
 [build-system]
