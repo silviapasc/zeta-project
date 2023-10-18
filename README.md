@@ -1,8 +1,9 @@
 ### Workflow
 
 + create github repo
-+ clone the repo locally (in this case set the dir to SP e directly clone the repo)
-+ open the initialized empty folder in PyCharm
-+ within the folder create a poetry project with the cmd "poetry new project-name" (the project will then contain all the basic files)
-+ from the terminal move the the "project-name" folder and create a venv for it with the cmd "poetry install"
-+ activate the venv with the cmd "poetry shell"/"deactivate" to simply deactivate the venv
++ within the dir SoftwareProjekte create a poetry project with the cmd _poetry new project-name_ (the project will then contain all the basic files)
++ initialize the _project-name_ folder in git
++ open the _project-name_ folder in in PyCharm and activate the Poetry venv (automatically set by PyCharm)
++ push to the remote collection
+
++ digit _deactivate_ to simply deactivate the Poetry venv
