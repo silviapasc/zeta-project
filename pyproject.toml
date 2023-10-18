@@ -5,6 +5,7 @@ description = "ken-project is a test project to create a simple python library w
 authors = ["Silvia Pasciullo <pasciullo.s@gmail.com>"]
 readme = "README.md"
 
+
 [tool.poetry.dependencies]
 python = ">=3.10,<3.13"
 pytest = "^7.4.2"
