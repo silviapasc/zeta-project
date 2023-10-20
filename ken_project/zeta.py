@@ -33,6 +33,7 @@ def tokenize(text):
 
 
 # Count the frequency for each token within the text file
+# refactor the code here!
 def word_count(tokens):
     frequencies = {}
     for token in tokens:
@@ -41,3 +42,9 @@ def word_count(tokens):
         else:
             frequencies[token] = 1
     return frequencies
+
+
+# Printing the output of the functions
+if __name__ == '__main__':
+    print('Executing as standalone script')
+    print(f'This is the the output of the function: {get_cwd()}')
