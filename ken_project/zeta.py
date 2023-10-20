@@ -1,8 +1,15 @@
-# Check your current work directory
+# Check your current working directory
 def get_cwd():
     import os
     cwd = os.getcwd()
     return cwd
+
+
+# Set required working directory
+def set_cwd(path):
+    import os
+    new_path = path
+    return os.chdir(new_path)
 
 
 # Read the text file
@@ -11,13 +18,17 @@ def read_text(filename):
         return file.read()
 
 
+# Lowercase text
+def lowercase(text):
+    return text.lower()
+
+
 # Tokenize the text file
 def tokenize(text):
-    # maybe a regex would be better hier
-    punctuation = ',.;:?@«»<>„“…–/·~!"#$%&|=()*¡[]{}\°’`´'
-    tokens = text.split()
-    for i, token in enumerate(tokens):
-        tokens[i] = token.strip(punctuation)
+    import re
+    # maybe a regex would be better here; uppercase not removed!
+    new_text = re.sub(r'[^\w\s]', '', text)
+    tokens = new_text.split()
     return tokens
 
 
