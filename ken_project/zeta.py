@@ -62,6 +62,23 @@ def build_segments(tokens, segment_length):
     return [tokens[x: x + segment_length] for x in range(0, len(tokens), segment_length)]
 
 
+# Consider now these subsets of tokens as unit to check if the merkmal occurs
+# Occurs the merkmal at least once, then it is valid as check
+# 'segment_list' should be also iterator?
+# After that, count in how many segments (of the partition) the merkmal occurs, i.e. totally
+
+def feature_occurs(segment_list, feature):
+    result = [segment for segment in segment_list if feature in segment]
+    return len(result), result
+
+
+
+
+
+
+
+
+
 # Printing the output of the functions
 if __name__ == '__main__':
     # this will we deleted when the script is complete
