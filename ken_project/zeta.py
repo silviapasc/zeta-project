@@ -12,27 +12,35 @@ def set_cwd(path):
     return os.chdir(new_path)
 
 
-# Read the text file
+# Read the text file -> str
 def read_text(filename):
     with open(filename, 'rt', encoding='utf-8') as file:
         return file.read()
 
 
-# Lowercase text
+# Lowercase text (str) -> str
 def lowercase(text):
     return text.lower()
 
 
-# Tokenize the text file
+# Tokenize the text file (str) -> list
+# regex to remove punctuation
+# Stopwords are still included
 def tokenize(text):
     import re
-    # maybe a regex would be better here; uppercase not removed!
+    # uppercase not removed, because there is another function for that purpose!
     new_text = re.sub(r'[^\w\s]', '', text)
     tokens = new_text.split()
     return tokens
 
 
+# Remove stopswords with a specific function
+
+
+
 # Count the frequency for each token within the text file
+# Last step was a list of strings, could be iterator
+#
 # refactor the code here!
 def word_count(tokens):
     frequencies = {}
@@ -43,8 +51,24 @@ def word_count(tokens):
             frequencies[token] = 1
     return frequencies
 
+# Set 2000-5000 tokens as value to build segments
+# Take the list or iterator and count the number of tokens up to 2000
+# Here set a limit and move on to the next segment
+def build_segments(tokens):
+    # [list(x[1]) for x in itertools.groupby(myList, lambda x: x == '|') if not x[0]]
+    return [tokens[x:x + 5] for x in range(0, len(tokens), 5)]
+
+
+
+
+
+
+
+
+
 
 # Printing the output of the functions
 if __name__ == '__main__':
+    # this will we deleted when the script is complete
     print('Executing as standalone script')
     print(f'This is the the output of the function: {get_cwd()}')
