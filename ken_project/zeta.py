@@ -37,7 +37,6 @@ def tokenize(text):
 # Remove stopswords with a specific function
 
 
-
 # Count the frequency for each token within the text file
 # Last step was a list of strings, could be iterator
 #
@@ -51,20 +50,16 @@ def word_count(tokens):
             frequencies[token] = 1
     return frequencies
 
+
 # Set 2000-5000 tokens as value to build segments
 # Take the list or iterator and count the number of tokens up to 2000
 # Here set a limit and move on to the next segment
-def build_segments(tokens):
-    # [list(x[1]) for x in itertools.groupby(myList, lambda x: x == '|') if not x[0]]
-    return [tokens[x:x + 5] for x in range(0, len(tokens), 5)]
-
-
-
-
-
-
-
-
+# take an iterator -> list
+def build_segments(tokens, segment_length):
+    # The index at which split the tokens iterator is defined through Slicing: 'x: x + segment_length'
+    # Slicing is used to retrieve a subset of values
+    # To retrieve a subset of elements, the start and stop positions need to be defined
+    return [tokens[x: x + segment_length] for x in range(0, len(tokens), segment_length)]
 
 
 # Printing the output of the functions
