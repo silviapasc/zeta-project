@@ -1,10 +1,3 @@
-# Check your current working directory
-def get_cwd():
-    import os
-    cwd = os.getcwd()
-    return cwd
-
-
 # Set required working directory
 def set_cwd(current_path):
     import os
