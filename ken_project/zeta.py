@@ -30,6 +30,9 @@ def define_dictionary(path):
 
 
 # Define Pandas dataframe from dictionary
+def create_df(corpus_dict):
+    import pandas as pd
+    return pd.DataFrame(corpus_dict.items(), columns=['File Name', 'Text'])
 
 
 # Lowercase text (str) -> str
