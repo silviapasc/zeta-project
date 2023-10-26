@@ -6,16 +6,31 @@ def get_cwd():
 
 
 # Set required working directory
-def set_cwd(path):
+def set_cwd(current_path):
     import os
-    new_path = path
-    return os.chdir(new_path)
+    return os.chdir(current_path)
 
 
 # Read the text file -> str
 def read_text(filename):
     with open(filename, 'rt', encoding='utf-8') as file:
         return file.read()
+
+
+# Read the corpus
+def read_corpus(new_path):
+    # Import module
+    import os
+    # Iterate through all file
+    for file in os.listdir():
+        # Check whether file is in text format or not
+        if file.endswith(".txt"):
+            # Set the current file path
+            file_path = f"{new_path}/{file}"
+            # call the read_text() function
+            return read_text(file_path)
+
+
 
 
 # Lowercase text (str) -> str
@@ -69,8 +84,14 @@ def build_segments(tokens, segment_length):
 
 def feature_occurs(segment_list, feature):
     result = [segment for segment in segment_list if feature in segment]
+    # int for the number of segments containing the feature
+    # 'result' is a list of iterators (lists/tuples, but not sets)
     return len(result), result
 
+
+# Within the two partitions sort the texts so that
+# the text with the highest number of segments containing the feature on top
+# and the text with the lowest number of segments containing the feature at the bottom
 
 
 
