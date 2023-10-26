@@ -21,14 +21,9 @@ def read_text(filename):
 def read_corpus(new_path):
     # Import module
     import os
+    set_cwd(new_path)
     # Iterate through all file
-    for file in os.listdir():
-        # Check whether file is in text format or not
-        if file.endswith(".txt"):
-            # Set the current file path
-            file_path = f"{new_path}/{file}"
-            # call the read_text() function
-            return read_text(file_path)
+    return [read_text(file) for file in os.listdir() if file.endswith(".txt")]
 
 
 
