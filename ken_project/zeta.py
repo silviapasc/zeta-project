@@ -116,8 +116,10 @@ def count_segments_with_feature(segments_column):
 # Within the two partitions sort the texts so that
 # the text with the highest number of segments containing the feature on top
 # and the text with the lowest number of segments containing the feature at the bottom
-def
-df.sort_values(by='Counts', ascending=False)
+# It would be better to create a mask (i.e. dataframe reduced) and
+# output only the text index/title and the relative counts
+def sort_texts_descending(dataframe, column):
+    return dataframe.sort_values(by=column, ascending=False)
 
 # Printing the output of the functions
 if __name__ == '__main__':
