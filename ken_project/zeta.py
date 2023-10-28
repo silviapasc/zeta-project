@@ -116,6 +116,7 @@ def count_segments_with_feature(segments_column):
 # Within the two partitions sort the texts so that
 # the text with the highest number of segments containing the feature on top
 # and the text with the lowest number of segments containing the feature at the bottom
+def
 df.sort_values(by='Counts', ascending=False)
 
 # Printing the output of the functions
