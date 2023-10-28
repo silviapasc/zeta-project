@@ -84,25 +84,39 @@ def build_segments_corpus(tokens_lists, segment_len):
 # Occurs the merkmal at least once, then it is valid as check
 # 'segment_list' should be also iterator?
 # After that, count in how many segments (of the partition) the merkmal occurs, i.e. totally
+# 'segment_list' can be a list of lists or tuples
 def feature_occurs(segment_list, feature):
     result = [segment for segment in segment_list if feature in segment]
+    return result
     # int for the number of segments containing the feature
     # 'result' is a list of iterators (lists/tuples, but not sets)
-    return len(result), result
+    # return len(result), result
 
 
 # Count the number of segments containing the feature for each text within the corpus
 # Gives a tuple back with integer value of segments containing feature
 # and a list of the segments themselves
-def feature_occurs_corpus(corpus_segments, feature):
-    for segments in corpus_segments:
-        return feature_occurs(segments, feature)
+# There is a conflict between the total index number of the dataframe
+# and the number of results, because for a single index there can be
+# more results and for some other there is no results
+def feature_occurs_corpus(column, feature):
+    return [feature_occurs(segments, feature) for segments in column]
+
+
+# Count the total number of segments containing the feature for each document,
+# i.e. dataframe row. Create a new column for that?
+def count_segments_with_feature(segments_column):
+    return [len(segments) for segments in segments_column]
+
+
+# return [segments for segments in container if feature in segments]
+# result = feature_occurs(container, feature)
 
 
 # Within the two partitions sort the texts so that
 # the text with the highest number of segments containing the feature on top
 # and the text with the lowest number of segments containing the feature at the bottom
-
+df.sort_values(by='Counts', ascending=False)
 
 # Printing the output of the functions
 if __name__ == '__main__':
