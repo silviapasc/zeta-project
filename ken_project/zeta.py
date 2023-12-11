@@ -1,7 +1,30 @@
-# Set required working directory
-def set_cwd(current_path):
-    import os
-    return os.chdir(current_path)
+# Import the required modules
+import os
+import re
+import pandas as pd
+
+
+# Set the proper working directory path
+def set_cwd(current_path: str) -> str:
+    """ The function checks whether the specified path matches the
+    current working directory path. If yes, the specified path is returned.
+    Otherwise, the working directory is changed to the specified path.
+
+    Parameters:
+    current_path (str): The desired directory path to which the working directory
+    is eventually to be changed.
+
+    Return value:
+    str: The current working directory path if it matches the specified path.
+    Otherwise, the changed working directory path is returned.
+
+    Note:
+    The function uses the 'os' module, which must be imported for the function to work properly.
+    """
+    if current_path == os.getcwd():
+        return current_path
+    else:
+        return os.chdir(current_path)
 
 
 # Read the text file -> str
@@ -12,26 +35,24 @@ def read_text(filename):
 
 # Read the corpus of text files and returns a list of them
 def read_corpus(new_path):
-    # Import module
-    import os
     set_cwd(new_path)
-    # Iterate through all file
+    # Iterate through all files
     return [f"{file} : {read_text(file)}" for file in os.listdir() if file.endswith(".txt")]
 
 
 # Need a way to associate an index/title to each text during the manipulation!
 # Create dictionary where the text file name is the key and the text strings are the value
 def define_dictionary(path):
-    # Import module
-    import os
     # Set the cwd using the set_cwd() function
+    # Check the constraints in test_df_create!
     set_cwd(path)
     return {file: read_text(file) for file in os.listdir() if file.endswith(".txt")}
 
 
 # Define Pandas dataframe from dictionary
 def create_df(corpus_dict):
-    import pandas as pd
+    # add some if-raise-conditions?
+    # When same data title provided or non-string file names
     return pd.DataFrame(corpus_dict.items(), columns=['File Name', 'Text'])
 
 
@@ -49,7 +70,6 @@ def lowercase_corpus(texts_list):
 # regex to remove punctuation
 # Stopwords are still included
 def tokenize(text):
-    import re
     # uppercase not removed, because there is another function for that purpose!
     new_text = re.sub(r'[^\w\s]', '', text)
     tokens = new_text.split()
@@ -112,6 +132,10 @@ def count_segments_with_feature(segments_column):
 # return [segments for segments in container if feature in segments]
 # result = feature_occurs(container, feature)
 
+### segments_with_features_total = df['Number of Segments with Feature Occurrence'].sum()
+### df['Total Segments'] = df['Segments'].apply(len)
+### segments_total = df['Total Segments'].sum()
+
 
 # Within the two partitions sort the texts so that
 # the text with the highest number of segments containing the feature on top
@@ -120,6 +144,18 @@ def count_segments_with_feature(segments_column):
 # output only the text index/title and the relative counts
 def sort_texts_descending(dataframe, column):
     return dataframe.sort_values(by=column, ascending=False)
+
+
+# Now you should think about how to compare the two partitions
+# (text-and-counts vs text-and-counts; maybe merge p1 and p2)
+# and before that about the parameter to set them
+
+# Workflow
+# Set a parameter to separate the two partitions;
+# Process the texts within each subset;
+# Get the number of sequences containing the chosen feature;
+# Sort the two subsets in descending order (texts with more sequences-with-feature
+# on the top and texts with less sequences-with-feature at the bottom)
 
 # Printing the output of the functions
 if __name__ == '__main__':
