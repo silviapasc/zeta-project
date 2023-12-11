@@ -26,9 +26,13 @@ def set_cwd(current_path: str) -> str:
     else:
         return os.chdir(current_path)
 
+    # What if an invalid directory path is selected? Actually a
+    # FileNotFoundError is raised by the following function read_corpus()
 
-# Read the text file -> str
-def read_text(filename):
+
+def read_text(filename: str) -> bytes:
+    """ Reads the text file content, returning the specified number of bytes.
+    Default -1, which means the whole file"""
     with open(filename, 'rt', encoding='utf-8') as file:
         return file.read()
 
@@ -162,3 +166,6 @@ if __name__ == '__main__':
     # this will we deleted when the script is complete
     print('Executing as standalone script')
     print(f'This is the the output of the function: insert a function here')
+
+    path = input("Enter the path to the text corpus/partition: ")
+    corpus = read_corpus(path)
