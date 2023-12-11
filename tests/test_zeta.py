@@ -1,6 +1,6 @@
 from ken_project.zeta import (set_cwd, read_text, define_dictionary,
                               create_df, lowercase, lowercase_corpus, tokenize, tokenize_corpus, build_segments,
-                              build_segments_corpus)
+                              build_segments_corpus, feature_occurs)
 import pytest
 import os, re
 import pandas as pd
@@ -132,3 +132,13 @@ def test_build_segments_corpus():
     segment_len = 3
     expected_result = [[["The", "first", "text"], ["ends", "."]], [["The", "second", "one"], ["too", "."]]]
     assert build_segments_corpus(tokens_lists, segment_len) == expected_result
+
+
+def test_feature_occurs():
+    segment_list = [["This", "is", "a"], ["test", "."], ["Another", "test", "sentence"], ["with", "feature"]]
+    feature = "test"
+    expected_result = [["test", "."], ["Another", "test", "sentence"]]
+    assert feature_occurs(segment_list, feature) == expected_result
+
+
+
