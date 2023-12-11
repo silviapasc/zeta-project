@@ -48,17 +48,16 @@ def define_dictionary(specified_path: str) -> dict:
 
 
 # Define a Pandas dataframe from dictionary
-def create_df(corpus_dict:dict) -> pd.DataFrame:
+def create_df(corpus_dict: dict) -> pd.DataFrame:
     """ Creates a pandas dataframe from a dictionary defined by define_dictionary().
      The dictionary keys are collected under the 'File Name' column and the values
      under the 'Text' column."""
-    # add some if-raise-conditions?
-    # When same data title provided or non-string file names
+    # add some if-raise-conditions? Consider exceptions
     return pd.DataFrame(corpus_dict.items(), columns=['File Name', 'Text'])
 
 
-# Lowercase text (str) -> str
-def lowercase(text):
+def lowercase(text: str) -> str:
+    """ Converts strings to lowercase."""
     return text.lower()
 
 

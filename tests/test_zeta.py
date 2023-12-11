@@ -1,5 +1,5 @@
 from ken_project.zeta import (set_cwd, read_text, define_dictionary,
-                              create_df)
+                              create_df, lowercase)
 import pytest
 import os
 import pandas as pd
@@ -79,6 +79,13 @@ def test_create_df_duplicate_file_names():
         # In the block, call the function that is expected to fail
         create_df(corpus_dict)
         assert e.type == ValueError
+
+
+# Test case for lowercase() function
+def test_lowercase():
+    # Assign a partial uppercase text to the upper_text variable
+    upper_text = 'Change this Text to LÖWERCASE'
+    assert lowercase(upper_text) == 'change this text to löwercase'
 
 
 
