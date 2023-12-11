@@ -1,5 +1,5 @@
 from ken_project.zeta import (set_cwd, read_text, define_dictionary,
-                              create_df, lowercase)
+                              create_df, lowercase, lowercase_corpus)
 import pytest
 import os
 import pandas as pd
@@ -88,4 +88,9 @@ def test_lowercase():
     assert lowercase(upper_text) == 'change this text to löwercase'
 
 
+# Test case for lowercase_corpus() function
+def test_lowercase_corpus():
+    # Define a list with partial uppercase text
+    upper_list = ['First UPPER TEXT', '2ND UppeR TexT']
+    assert lowercase_corpus(upper_list) == ['first upper text', '2nd upper text']
 
