@@ -138,22 +138,22 @@ def count_segments_with_feature(segments_column: list) -> list[int]:
     return [len(segments) for segments in segments_column]
 
 
+# Within the dataframe/partition sort the samples so that the text item with
+# the highest number of segments containing the feature figures at the top,
+# and the text with the lowest number of segments containing the feature is
+# at the bottom
+def sort_texts_descending(dataframe: pd.DataFrame, column: pd.Series) -> pd.DataFrame:
+    """ Returns a dataframe sorted by the values from the specified column, in descending order """
+    return dataframe.sort_values(by=column, ascending=False)
+
+
+
 # return [segments for segments in container if feature in segments]
 # result = feature_occurs(container, feature)
 
 ### segments_with_features_total = df['Number of Segments with Feature Occurrence'].sum()
 ### df['Total Segments'] = df['Segments'].apply(len)
 ### segments_total = df['Total Segments'].sum()
-
-
-# Within the two partitions sort the texts so that
-# the text with the highest number of segments containing the feature on top
-# and the text with the lowest number of segments containing the feature at the bottom
-# It would be better to create a mask (i.e. dataframe reduced) and
-# output only the text index/title and the relative counts
-def sort_texts_descending(dataframe, column):
-    return dataframe.sort_values(by=column, ascending=False)
-
 
 # Now you should think about how to compare the two partitions
 # (text-and-counts vs text-and-counts; maybe merge p1 and p2)
@@ -180,4 +180,5 @@ if __name__ == '__main__':
     df['Segments'] = build_segments_corpus(df['Tokenized Text'], 1000)
     df['Feature Occurrence'] = feature_occurs_corpus(df['Segments'], 'sherlock')
     df['Number of Segments with Feature'] = count_segments_with_feature(df['Feature Occurrence'])
+    df_sorted = sort_texts_descending(df, 'Number of Segments with Feature')
     # print(type(df['Tokenized Text']))
