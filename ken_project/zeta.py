@@ -97,7 +97,10 @@ def build_segments(tokens: list, segment_length: int) -> list:
 
 
 # Build segments for each text of the corpus
-def build_segments_corpus(tokens_lists, segment_len):
+def build_segments_corpus(tokens_lists: list, segment_len: int) -> list:
+    """ Builds a list of token segments from each tokens list, in which
+    the corpus texts are split into. The argument 'segment_len' specifies
+    the number of tokens to be included in each segment """
     return [build_segments(tokenized, segment_len) for tokenized in tokens_lists]
 
 
@@ -169,4 +172,5 @@ if __name__ == '__main__':
     df = create_df(dictionary)
     df['Lowercase Text'] = lowercase_corpus(df.Text)
     df['Tokenized Text'] = tokenize_corpus(df['Lowercase Text'])
+    df['Segments'] = build_segments_corpus(df['Tokenized_Text'], 1000)
     #print(type(df['Tokenized Text']))
