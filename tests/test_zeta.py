@@ -1,4 +1,5 @@
-from ken_project.zeta import (set_cwd, read_text, define_dictionary)
+from ken_project.zeta import (set_cwd, read_text, define_dictionary,
+                              create_df)
 import pytest
 import os
 import pandas as pd
@@ -43,6 +44,41 @@ def test_define_dictionary(tmp_path):
 
     # Assert the expected dictionary
     assert result == {"file1.txt": "This is a text file", "file2.txt": "This is another text file"}
+
+
+# Test case for a non-empty corpus_dict
+def test_create_df_non_empty_dict():
+    # Define a dictionary
+    corpus_dict = {'file1.txt': 'This is file #1.', 'file2.txt': 'This is file #2.'}
+    # Define a pandas dataframe from the above dictionary by means of the function under test
+    df = create_df(corpus_dict)
+    # Assert the basic characteristics for a non-empty dataframe
+    assert isinstance(df, pd.DataFrame)
+    assert not df.empty
+    assert df.shape[0] == len(corpus_dict)
+    assert df.columns.tolist() == ['File Name', 'Text']
+    assert df['File Name'].tolist() == list(corpus_dict.keys())
+    assert df['Text'].tolist() == list(corpus_dict.values())
+
+
+# Test case for an empty corpus_dict
+def test_create_df_empty_dict():
+    # Define an empty dictionary
+    corpus_dict = {}
+    # Define a pandas dataframe from the above dictionary by means of the function under test
+    df = create_df(corpus_dict)
+    # Assert the basic characteristics for an empty dataframe
+    assert isinstance(df, pd.DataFrame)
+    assert df.empty
+
+
+# Test case for a corpus_dict with duplicate file names
+def test_create_df_duplicate_file_names():
+    corpus_dict = {'file1.txt': 'This is file #1.', 'file1.txt': 'This is a duplicate file #1.'}
+    with pytest.raises(Exception) as e:
+        # In the block, call the function that is expected to fail
+        create_df(corpus_dict)
+        assert e.type == ValueError
 
 
 
