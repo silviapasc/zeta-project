@@ -1,6 +1,8 @@
 # Import the required modules
 import os
 import re
+from typing import List
+
 import pandas as pd
 
 
@@ -129,9 +131,10 @@ def feature_occurs_corpus(segments_column: list, feature: str) -> list:
 # more results and for some other there is no results
 
 
-# Count the total number of segments containing the feature for each document,
-# i.e. dataframe row. Create a new column for that?
-def count_segments_with_feature(segments_column):
+# Count the total number of segments containing the feature for each document
+def count_segments_with_feature(segments_column: list) -> list[int]:
+    """ Returns a list with the total number of segments containing the specified
+    feature. The total number is referred to each text item """
     return [len(segments) for segments in segments_column]
 
 
@@ -175,4 +178,6 @@ if __name__ == '__main__':
     df['Lowercase Text'] = lowercase_corpus(df.Text)
     df['Tokenized Text'] = tokenize_corpus(df['Lowercase Text'])
     df['Segments'] = build_segments_corpus(df['Tokenized Text'], 1000)
+    df['Feature Occurrence'] = feature_occurs_corpus(df['Segments'], 'sherlock')
+    df['Number of Segments with Feature'] = count_segments_with_feature(df['Feature Occurrence'])
     # print(type(df['Tokenized Text']))
