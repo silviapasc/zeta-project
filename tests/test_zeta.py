@@ -2,7 +2,7 @@ from ken_project.zeta import (set_cwd, read_text, define_dictionary,
                               create_df, lowercase, lowercase_corpus,
                               tokenize, tokenize_corpus, build_segments,
                               build_segments_corpus, feature_occurs, feature_occurs_corpus,
-                              count_segments_with_feature)
+                              count_segments_with_feature, sort_texts_descending)
 import pytest
 import os, re
 import pandas as pd
@@ -157,3 +157,25 @@ def test_count_segments_with_feature():
     segments_count = [2, 1]
     assert count_segments_with_feature(segments) == segments_count
 
+
+# Create a test dataframe for this test case
+@pytest.fixture
+def test_dataframe():
+    data = {
+        'Text': ['This is a text example.', 'Each text is related to a value.', 'The text with the highest value is '
+                                                                                'displayed at the top.'],
+        'Value': [3, 1, 5]
+    }
+    return pd.DataFrame(data)
+
+
+def test_sort_texts_descending(test_dataframe):
+    column = 'Value'
+    expected_df = pd.DataFrame({
+        'Text': ['This is a text example.', 'Each text is related to a value.', 'The text with the highest value is '
+                                                                                'displayed at the top.'],
+        'Value': [3, 1, 5]
+    })
+    expected_df = expected_df.sort_values(by=column, ascending=False)
+    result = sort_texts_descending(test_dataframe, column)
+    pd.testing.assert_frame_equal(result, expected_df)
