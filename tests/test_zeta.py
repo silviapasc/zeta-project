@@ -1,7 +1,7 @@
 from ken_project.zeta import (set_cwd, read_text, define_dictionary,
-                              create_df, lowercase, lowercase_corpus)
+                              create_df, lowercase, lowercase_corpus, tokenize)
 import pytest
-import os
+import os, re
 import pandas as pd
 
 
@@ -93,4 +93,20 @@ def test_lowercase_corpus():
     # Define a list with partial uppercase text
     upper_list = ['First UPPER TEXT', '2ND UppeR TexT']
     assert lowercase_corpus(upper_list) == ['first upper text', '2nd upper text']
+
+
+def test_tokenize():
+    # The 're' module has to be imported for this test case
+    # Define some string texts and assign them to a variable
+    text1 = "Hello, world!"
+    text2 = "This is a test @123.com http//test.com"
+    text3 = "Can't you get'em all?"
+
+    expected_tokens1 = ["Hello", "world"]
+    expected_tokens2 = ["This", "is", "a", "test", "123com", "httptestcom"]
+    expected_tokens3 = ["Cant", "you", "getem", "all"]
+
+    assert tokenize(text1) == expected_tokens1
+    assert tokenize(text2) == expected_tokens2
+    assert tokenize(text3) == expected_tokens3
 
