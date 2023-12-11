@@ -1,5 +1,5 @@
 from ken_project.zeta import (set_cwd, read_text, define_dictionary,
-                              create_df, lowercase, lowercase_corpus, tokenize)
+                              create_df, lowercase, lowercase_corpus, tokenize, tokenize_corpus)
 import pytest
 import os, re
 import pandas as pd
@@ -110,3 +110,10 @@ def test_tokenize():
     assert tokenize(text2) == expected_tokens2
     assert tokenize(text3) == expected_tokens3
 
+
+def test_tokenize_corpus():
+    # Define a list of texts to be split into tokens
+    texts_list = ["This is a test.", "Another @my-test.com test!"]
+    # Note that no punctuation is included because of test_tokenize()
+    expected_result = [["This", "is", "a", "test"], ["Another", "mytestcom", "test"]]
+    assert tokenize_corpus(texts_list) == expected_result
