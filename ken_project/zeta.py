@@ -61,16 +61,14 @@ def lowercase(text: str) -> str:
     return text.lower()
 
 
-def lowercase_corpus(texts_col: pd.Series) -> list:
+def lowercase_corpus(texts_col: list) -> list:
     """ Converts the corpus texts within the 'Text' column to lowercase."""
     return [lowercase(file) for file in texts_col]
 
 
-# Tokenize the text file (str) -> list
-# regex to remove punctuation
-# Stopwords are still included
-def tokenize(text):
-    # uppercase not removed, because there is another function for that purpose!
+def tokenize(text: str) -> list:
+    """ Tokenizes a string text returning a list of tokens.
+    Uses the 're' module to remove punctuation"""
     new_text = re.sub(r'[^\w\s]', '', text)
     tokens = new_text.split()
     return tokens
@@ -80,8 +78,10 @@ def tokenize(text):
 
 
 # Tokenize lowercase corpus
-def tokenize_corpus(texts_list):
-    return [tokenize(file) for file in texts_list]
+def tokenize_corpus(texts_col: list) -> list:
+    """ Tokenizes the corpus texts within the 'Text' column
+    returning a list of token lists. Punctuation is also removed """
+    return [tokenize(file) for file in texts_col]
 
 
 # Set 2000-5000 tokens as value to build segments
