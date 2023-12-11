@@ -1,5 +1,6 @@
 from ken_project.zeta import (set_cwd, read_text, define_dictionary,
-                              create_df, lowercase, lowercase_corpus, tokenize, tokenize_corpus, build_segments)
+                              create_df, lowercase, lowercase_corpus, tokenize, tokenize_corpus, build_segments,
+                              build_segments_corpus)
 import pytest
 import os, re
 import pandas as pd
@@ -124,3 +125,10 @@ def test_build_segments():
     segment_length = 3
     expected_result = [["A", "first", "segment"], [".", "Here", "is"], ["a", "second", "."]]
     assert build_segments(tokens, segment_length) == expected_result
+
+
+def test_build_segments_corpus():
+    tokens_lists = [["The", "first", "text", "ends", "."], ["The", "second", "one", "too", "."]]
+    segment_len = 3
+    expected_result = [[["The", "first", "text"], ["ends", "."]], [["The", "second", "one"], ["too", "."]]]
+    assert build_segments_corpus(tokens_lists, segment_len) == expected_result
