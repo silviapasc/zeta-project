@@ -47,8 +47,11 @@ def define_dictionary(specified_path: str) -> dict:
     return {file: read_text(file) for file in os.listdir() if file.endswith(".txt")}
 
 
-# Define Pandas dataframe from dictionary
-def create_df(corpus_dict):
+# Define a Pandas dataframe from dictionary
+def create_df(corpus_dict:dict) -> pd.DataFrame:
+    """ Creates a pandas dataframe from a dictionary defined by define_dictionary().
+     The dictionary keys are collected under the 'File Name' column and the values
+     under the 'Text' column."""
     # add some if-raise-conditions?
     # When same data title provided or non-string file names
     return pd.DataFrame(corpus_dict.items(), columns=['File Name', 'Text'])
@@ -162,5 +165,6 @@ if __name__ == '__main__':
     print(f'This is the the output of the function: insert a function here')
 
     path = input("Enter the path to the text corpus/partition: ")
-    corpus = define_dictionary(path)
-    #print(corpus)
+    dictionary = define_dictionary(path)
+    df = create_df(dictionary)
+    #print(df)
