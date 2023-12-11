@@ -84,14 +84,15 @@ def tokenize_corpus(texts_col: list) -> list:
     return [tokenize(file) for file in texts_col]
 
 
-# Set 2000-5000 tokens as value to build segments
-# Take the list or iterator and count the number of tokens up to 2000
-# Here set a limit and move on to the next segment
-# take an iterator -> list
-def build_segments(tokens, segment_length):
-    # The index at which split the tokens iterator is defined through Slicing: 'x: x + segment_length'
-    # Slicing is used to retrieve a subset of values
-    # To retrieve a subset of elements, the start and stop positions need to be defined
+# Set a function to build the text segments (ideally 2000-5000 tokens)
+def build_segments(tokens: list, segment_length: int) -> list:
+    """ Builds a series of token sublists or segments based on the given segment length.
+    The segment length corresponds to the number of tokens, each segment is made of.
+    """
+    # The index at which the tokens should be split is defined through the slice syntax.
+    # The value '0' corresponds to the starting point, the total number of tokens – len(tokens) –
+    # marks the stop position and the specified number of tokens sets the interval at which
+    # the split occurs
     return [tokens[x: x + segment_length] for x in range(0, len(tokens), segment_length)]
 
 
@@ -167,4 +168,5 @@ if __name__ == '__main__':
     dictionary = define_dictionary(path)
     df = create_df(dictionary)
     df['Lowercase Text'] = lowercase_corpus(df.Text)
-    #print(type(df['Lowercase Text']))
+    df['Tokenized Text'] = tokenize_corpus(df['Lowercase Text'])
+    #print(type(df['Tokenized Text']))
