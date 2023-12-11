@@ -1,7 +1,8 @@
 from ken_project.zeta import (set_cwd, read_text, define_dictionary,
                               create_df, lowercase, lowercase_corpus,
                               tokenize, tokenize_corpus, build_segments,
-                              build_segments_corpus, feature_occurs, feature_occurs_corpus)
+                              build_segments_corpus, feature_occurs, feature_occurs_corpus,
+                              count_segments_with_feature)
 import pytest
 import os, re
 import pandas as pd
@@ -149,3 +150,10 @@ def test_feature_occurs_corpus():
     feature = "hashtag"
     expected_result = [[["Find", "a", "hashtag"]], [["with", "hashtag"]]]
     assert feature_occurs_corpus(segment_list, feature) == expected_result
+
+
+def test_count_segments_with_feature():
+    segments = [[["Find", "a", "hashtag"], ["Next", "hashtag"]], [["with", "hashtag"]]]
+    segments_count = [2, 1]
+    assert count_segments_with_feature(segments) == segments_count
+
