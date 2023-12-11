@@ -1,5 +1,5 @@
 from ken_project.zeta import (set_cwd, read_text, define_dictionary,
-                              create_df, lowercase, lowercase_corpus, tokenize, tokenize_corpus)
+                              create_df, lowercase, lowercase_corpus, tokenize, tokenize_corpus, build_segments)
 import pytest
 import os, re
 import pandas as pd
@@ -117,3 +117,10 @@ def test_tokenize_corpus():
     # Note that no punctuation is included because of test_tokenize()
     expected_result = [["This", "is", "a", "test"], ["Another", "mytestcom", "test"]]
     assert tokenize_corpus(texts_list) == expected_result
+
+
+def test_build_segments():
+    tokens = ["A", "first", "segment", ".", "Here", "is", "a", "second", "."]
+    segment_length = 3
+    expected_result = [["A", "first", "segment"], [".", "Here", "is"], ["a", "second", "."]]
+    assert build_segments(tokens, segment_length) == expected_result
