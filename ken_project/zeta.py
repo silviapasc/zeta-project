@@ -61,9 +61,9 @@ def lowercase(text: str) -> str:
     return text.lower()
 
 
-# Lowercase corpus
-def lowercase_corpus(texts_list):
-    return [lowercase(file) for file in texts_list]
+def lowercase_corpus(texts_col: pd.Series) -> list:
+    """ Converts the corpus texts within the 'Text' column to lowercase."""
+    return [lowercase(file) for file in texts_col]
 
 
 # Tokenize the text file (str) -> list
@@ -166,4 +166,5 @@ if __name__ == '__main__':
     path = input("Enter the path to the text corpus/partition: ")
     dictionary = define_dictionary(path)
     df = create_df(dictionary)
-    #print(df)
+    df['Lowercase Text'] = lowercase_corpus(df.Text)
+    #print(type(df['Lowercase Text']))
