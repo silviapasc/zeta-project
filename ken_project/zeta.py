@@ -104,12 +104,18 @@ def build_segments_corpus(tokens_lists: list, segment_len: int) -> list:
     return [build_segments(tokenized, segment_len) for tokenized in tokens_lists]
 
 
-# Consider now these subsets of tokens as the unit to check if the chosen feature occurs
-# within the texts. If the feature occurs at least once, this is what matters.
+# Consider now these subsets of tokens as the unit to check if the chosen feature
+# occurs within the texts. If the feature occurs at least once, this is what matters
 def feature_occurs(segments_list: list, feature: str) -> list:
     """ Returns a list of those segments containing the specified feature """
     result = [segment for segment in segments_list if feature in segment]
     return result
+
+
+def feature_occurs_corpus(segments_column: list, feature: str) -> list:
+    """ Returns a list, for each dataframe sample, of only those segments
+    containing the specified feature """
+    return [feature_occurs(segments, feature) for segments in segments_column]
 
 
 # After that, count in how many segments (of the partition) the merkmal occurs, i.e. totally
@@ -121,8 +127,6 @@ def feature_occurs(segments_list: list, feature: str) -> list:
 # There is a conflict between the total index number of the dataframe
 # and the number of results, because for a single index there can be
 # more results and for some other there is no results
-def feature_occurs_corpus(column, feature):
-    return [feature_occurs(segments, feature) for segments in column]
 
 
 # Count the total number of segments containing the feature for each document,
@@ -171,4 +175,4 @@ if __name__ == '__main__':
     df['Lowercase Text'] = lowercase_corpus(df.Text)
     df['Tokenized Text'] = tokenize_corpus(df['Lowercase Text'])
     df['Segments'] = build_segments_corpus(df['Tokenized Text'], 1000)
-    #print(type(df['Tokenized Text']))
+    # print(type(df['Tokenized Text']))
