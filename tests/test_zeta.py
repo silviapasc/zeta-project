@@ -1,6 +1,7 @@
 from ken_project.zeta import (set_cwd, read_text, define_dictionary,
-                              create_df, lowercase, lowercase_corpus, tokenize, tokenize_corpus, build_segments,
-                              build_segments_corpus, feature_occurs)
+                              create_df, lowercase, lowercase_corpus,
+                              tokenize, tokenize_corpus, build_segments,
+                              build_segments_corpus, feature_occurs, feature_occurs_corpus)
 import pytest
 import os, re
 import pandas as pd
@@ -141,4 +142,10 @@ def test_feature_occurs():
     assert feature_occurs(segment_list, feature) == expected_result
 
 
-
+# Basically this is the same function as above, just applied to all samples (i.e. lists
+# of segments) from a dataframe column
+def test_feature_occurs_corpus():
+    segment_list = [[["Find", "a", "hashtag"], ["here", "."]], [["Another", "test", "sentence"], ["with", "hashtag"]]]
+    feature = "hashtag"
+    expected_result = [[["Find", "a", "hashtag"]], [["with", "hashtag"]]]
+    assert feature_occurs_corpus(segment_list, feature) == expected_result
