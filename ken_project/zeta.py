@@ -37,19 +37,13 @@ def read_text(filename: str) -> bytes:
         return file.read()
 
 
-# Read the corpus of text files and returns a list of them
-def read_corpus(new_path):
-    set_cwd(new_path)
-    # Iterate through all files
-    return [f"{file} : {read_text(file)}" for file in os.listdir() if file.endswith(".txt")]
-
-
-# Need a way to associate an index/title to each text during the manipulation!
-# Create dictionary where the text file name is the key and the text strings are the value
-def define_dictionary(path):
-    # Set the cwd using the set_cwd() function
-    # Check the constraints in test_df_create!
-    set_cwd(path)
+# Create a dictionary where text file names are the keys and each text content is the value.
+# In this way each text file is bound to its title/index, when processed later
+def define_dictionary(specified_path: str) -> dict:
+    """ Creates a dictionary with the text items from the collection within
+    the specified directory path. The dictionary keys correspond to the text
+    file names and the values correspond to the text file contents."""
+    set_cwd(specified_path)
     return {file: read_text(file) for file in os.listdir() if file.endswith(".txt")}
 
 
@@ -168,4 +162,5 @@ if __name__ == '__main__':
     print(f'This is the the output of the function: insert a function here')
 
     path = input("Enter the path to the text corpus/partition: ")
-    corpus = read_corpus(path)
+    corpus = define_dictionary(path)
+    #print(corpus)
