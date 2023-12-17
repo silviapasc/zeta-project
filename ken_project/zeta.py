@@ -157,6 +157,11 @@ def count_segments_with_feature(segments_column: list) -> list[int]:
     return [len(segments) for segments in segments_column]
 
 
+def total_count(column_counts: pd.Series) -> int:
+    """ Returns the sum of a series of integer values """
+    return column_counts.sum()
+
+
 # Within the dataframe/partition sort the samples so that the text item with
 # the highest number of segments containing the feature figures at the top,
 # and the text with the lowest number of segments containing the feature is
@@ -197,7 +202,7 @@ if __name__ == '__main__':
     # Remove stopwords if necessary
     # df['Text No Stopwords'] = zt.remove_stopwords_corpus(['and', 'in'], df['Tokenized Text'])
     df['Segments'] = build_segments_corpus(df['Tokenized Text'], 1000)
-    # df['Segments Count'] = df['Segments'].apply(len)
+    # df['Segments Count'] = segments_count(df['Segments'])
     df['Feature Occurrence'] = feature_occurs_corpus(df['Segments'], 'sherlock')
     df['Number of Segments with Feature'] = count_segments_with_feature(df['Feature Occurrence'])
     df_sorted = sort_texts_descending(df, 'Number of Segments with Feature')
