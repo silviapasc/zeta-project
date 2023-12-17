@@ -76,14 +76,19 @@ def tokenize(text: str) -> list:
     return tokens
 
 
-# Remove stopwords with a specific function!
-
-
 # Tokenize lowercase corpus
 def tokenize_corpus(texts_col: list) -> list:
     """ Tokenizes the corpus texts within the 'Text' column
     returning a list of token lists. Punctuation is also removed """
     return [tokenize(file) for file in texts_col]
+
+
+# Eventually remove stopwords
+def remove_stopwords(stopwords_list: list, tokenized_text: list) -> list:
+    """ Removes stopwords from a list of string tokens, returning
+    a list of the filtered tokens. The stopwords themselves are
+    contained as string tokens within a list"""
+    return [token for token in tokenized_text if token not in stopwords_list]
 
 
 # Set a function to build the text segments (ideally 2000-5000 tokens)
@@ -192,4 +197,3 @@ if __name__ == '__main__':
     # Calculate Zeta (values range [-1,1])
     # zeta = Ratio_1 - Ratio_2
     # print(zeta)
-
