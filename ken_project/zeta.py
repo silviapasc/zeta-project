@@ -117,6 +117,14 @@ def build_segments_corpus(tokens_lists: list, segment_len: int) -> list:
     return [build_segments(tokenized, segment_len) for tokenized in tokens_lists]
 
 
+# Count total number of segments for each text
+def segments_count(segments_col: pd.Series) -> pd.Series:
+    """ Returns a series of integers from a series of string
+    tokens segments. The integers correspond to the total number
+    of segments in each text of the collection. """
+    return segments_col.apply(len)
+
+
 # Consider now these subsets of tokens as the unit to check if the chosen feature
 # occurs within the texts. If the feature occurs at least once, this is what matters
 def feature_occurs(segments_list: list, feature: str) -> list:
@@ -131,7 +139,7 @@ def feature_occurs_corpus(segments_column: list, feature: str) -> list:
     return [feature_occurs(segments, feature) for segments in segments_column]
 
 
-# After that, count in how many segments (of the partition) the merkmal occurs, i.e. totally
+# After that, count in how many segments (of the partition) the feature occurs, i.e. totally
 # 'segment_list' can be a list of lists or tuples
 
 # Count the number of segments containing the feature for each text within the corpus
@@ -186,17 +194,17 @@ if __name__ == '__main__':
     df = create_df(dictionary)
     df['Lowercase Text'] = lowercase_corpus(df.Text)
     df['Tokenized Text'] = tokenize_corpus(df['Lowercase Text'])
-    df['Segments'] = build_segments_corpus(df['Tokenized Text'], 1000)
     # Remove stopwords if necessary
     # df['Text No Stopwords'] = zt.remove_stopwords_corpus(['and', 'in'], df['Tokenized Text'])
-    # df['Total Segments'] = df['Segments'].apply(len)
+    df['Segments'] = build_segments_corpus(df['Tokenized Text'], 1000)
+    # df['Segments Count'] = df['Segments'].apply(len)
     df['Feature Occurrence'] = feature_occurs_corpus(df['Segments'], 'sherlock')
     df['Number of Segments with Feature'] = count_segments_with_feature(df['Feature Occurrence'])
     df_sorted = sort_texts_descending(df, 'Number of Segments with Feature')
     print(df_sorted)
 
     # With respect to each partition
-    # total_segments = df['Total Segments'].sum()
+    # total_segments = df['Segments Count'].sum()
     # total_segments_with_features = df['Number of Segments with Feature Occurrence'].sum()
     # print(f'Total of segments within the partition: ', total_segments)
     # print(f'Total of segments with feature within the partition: ', total_segments_with_features)

@@ -3,7 +3,7 @@ from ken_project.zeta import (set_cwd, read_text, define_dictionary,
                               tokenize, tokenize_corpus, build_segments,
                               build_segments_corpus, feature_occurs, feature_occurs_corpus,
                               count_segments_with_feature, sort_texts_descending, remove_stopwords,
-                              remove_stopwords_corpus)
+                              remove_stopwords_corpus, segments_count)
 import pytest
 import os, re
 import pandas as pd
@@ -149,6 +149,13 @@ def test_build_segments_corpus():
     segment_len = 3
     expected_result = [[["The", "first", "text"], ["ends", "."]], [["The", "second", "one"], ["too", "."]]]
     assert build_segments_corpus(tokens_lists, segment_len) == expected_result
+
+
+def test_segments_count():
+    segments_col = pd.Series([[["The", "first", "text"], ["ends", "."]], [["The", "second"], ["one", "too"], ["."]]])
+    expected_result = pd.Series([2, 3])
+    # Check that left and right Series are equal
+    pd.testing.assert_series_equal(segments_count(segments_col), expected_result)
 
 
 def test_feature_occurs():
