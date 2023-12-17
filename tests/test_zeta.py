@@ -2,7 +2,8 @@ from ken_project.zeta import (set_cwd, read_text, define_dictionary,
                               create_df, lowercase, lowercase_corpus,
                               tokenize, tokenize_corpus, build_segments,
                               build_segments_corpus, feature_occurs, feature_occurs_corpus,
-                              count_segments_with_feature, sort_texts_descending, remove_stopwords)
+                              count_segments_with_feature, sort_texts_descending, remove_stopwords,
+                              remove_stopwords_corpus)
 import pytest
 import os, re
 import pandas as pd
@@ -127,6 +128,13 @@ def test_remove_stopwords():
     tokenized_text = ['this', 'is', 'a', 'test']
     expected_result = ['this', 'test']
     assert remove_stopwords(stopwords, tokenized_text) == expected_result
+
+
+def test_remove_stopwords_corpus():
+    stopwords = ['a', 'and', 'is']
+    tokens_col = [['this', 'is', 'a', 'test'], ['and', 'this', 'is', 'another', 'test']]
+    expected_result = [['this', 'test'], ['this', 'another', 'test']]
+    assert remove_stopwords_corpus(stopwords, tokens_col) == expected_result
 
 
 def test_build_segments():

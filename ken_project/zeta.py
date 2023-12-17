@@ -91,6 +91,12 @@ def remove_stopwords(stopwords_list: list, tokenized_text: list) -> list:
     return [token for token in tokenized_text if token not in stopwords_list]
 
 
+def remove_stopwords_corpus(stopwords_list: list, tokens_col: list) -> list:
+    """ Removes stopwords from each string tokens list within a dataframe.
+    The stopwords themselves are contained as string tokens within a list"""
+    return [remove_stopwords(stopwords_list, tokenized_text) for tokenized_text in tokens_col]
+
+
 # Set a function to build the text segments (ideally 2000-5000 tokens)
 def build_segments(tokens: list, segment_length: int) -> list:
     """ Builds a series of token sublists or segments based on the given segment length.
@@ -174,6 +180,7 @@ def sort_texts_descending(dataframe: pd.DataFrame, column: list[int]) -> pd.Data
 # Executing as standalone script
 if __name__ == '__main__':
     # Get input user data by means of the input() function
+    # /home/iuser/DH/DH_2022_2023/SoftwareProjekte/doyle/corpus
     path = input("Enter the path to the text corpus/partition: ")
     dictionary = define_dictionary(path)
     df = create_df(dictionary)
@@ -181,6 +188,7 @@ if __name__ == '__main__':
     df['Tokenized Text'] = tokenize_corpus(df['Lowercase Text'])
     df['Segments'] = build_segments_corpus(df['Tokenized Text'], 1000)
     # Remove stopwords if necessary
+    # df['Text No Stopwords'] = zt.remove_stopwords_corpus(['and', 'in'], df['Tokenized Text'])
     # df['Total Segments'] = df['Segments'].apply(len)
     df['Feature Occurrence'] = feature_occurs_corpus(df['Segments'], 'sherlock')
     df['Number of Segments with Feature'] = count_segments_with_feature(df['Feature Occurrence'])
