@@ -161,6 +161,21 @@ def total_count(column_counts: pd.Series) -> int:
     return column_counts.sum()
 
 
+# Compute the ratio of the total number of segments containing the feature
+# over the total number of segments within a partition
+def ratio(segments_with_feature_count: int, segments_count: int) -> float:
+    """ Returns the percentage of segments containing the specified feature
+    over all segments of a partition"""
+    return segments_with_feature_count/segments_count
+
+
+# Zeta
+def zeta(ratio_1: float, ratio_2: float) -> float:
+    """ Returns the percentage of how consistently the specified feature
+    is used within the target partition compared to the reference partition"""
+    return ratio_1 - ratio_2
+
+
 # Within the dataframe/partition sort the samples so that the text item with
 # the highest number of segments containing the chosen_feature figures at the top,
 # and the text with the lowest number of segments containing the chosen_feature is
@@ -210,6 +225,7 @@ if __name__ == '__main__':
         df['Feature Occurrence'] = feature_occurs_corpus(df['Segments'], chosen_feature)
         df['Number of Segments with Feature'] = count_segments_with_feature(df['Feature Occurrence'])
         df_sorted1 = sort_texts_descending(df, 'Number of Segments with Feature')
+        # df_sorted1 = df.sort_values(by='Number of Segments with Feature', ascending=False)
 
         # Repeat the code to define the reference partition
         path2 = input("Enter the directory path to the reference partition: ")
@@ -224,6 +240,7 @@ if __name__ == '__main__':
         df['Feature Occurrence'] = feature_occurs_corpus(df['Segments'], 'sherlock')
         df['Number of Segments with Feature'] = count_segments_with_feature(df['Feature Occurrence'])
         df_sorted2 = sort_texts_descending(df, 'Number of Segments with Feature')
+        # df_sorted2 = df.sort_values(by='Number of Segments with Feature', ascending=False)
 
         # Dataframes output
         print(df_sorted1)
@@ -252,7 +269,8 @@ if __name__ == '__main__':
         repeat = input("Any other feature? (y/n): ")
         if repeat.lower() != "y":
             break
+    # Use the same sort_descending()
     summary = summary.sort_values(by='Zeta Value', ascending=False)
     # Save the definitive dataframe to a csv file
-    summary.to_csv('/home/iuser/Desktop/zeta-summary.csv')
+    # summary.to_csv('zeta-summary.csv')
     print(summary)
