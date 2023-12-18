@@ -124,35 +124,35 @@ def segments_count(segments_col: pd.Series) -> pd.Series:
     return segments_col.apply(len)
 
 
-# Consider now these subsets of tokens as the unit to check if the chosen feature
-# occurs within the texts. If the feature occurs at least once, this is what matters
+# Consider now these subsets of tokens as the unit to check if the chosen chosen_feature
+# occurs within the texts. If the chosen_feature occurs at least once, this is what matters
 def feature_occurs(segments_list: list, feature: str) -> list:
-    """ Returns a list of those segments containing the specified feature """
+    """ Returns a list of those segments containing the specified chosen_feature """
     result = [segment for segment in segments_list if feature in segment]
     return result
 
 
 def feature_occurs_corpus(segments_column: list, feature: str) -> list:
     """ Returns a list, for each dataframe sample, of only those segments
-    containing the specified feature """
+    containing the specified chosen_feature """
     return [feature_occurs(segments, feature) for segments in segments_column]
 
 
-# After that, count in how many segments (of the partition) the feature occurs, i.e. totally
+# After that, count in how many segments (of the partition) the chosen_feature occurs, i.e. totally
 # 'segment_list' can be a list of lists or tuples
 
-# Count the number of segments containing the feature for each text within the corpus
-# Gives a tuple back with integer value of segments containing feature
+# Count the number of segments containing the chosen_feature for each text within the corpus
+# Gives a tuple back with integer value of segments containing chosen_feature
 # and a list of the segments themselves
 # There is a conflict between the total index number of the dataframe
 # and the number of results, because for a single index there can be
 # more results and for some other there is no results
 
 
-# Count the total number of segments containing the feature for each document
+# Count the total number of segments containing the chosen_feature for each document
 def count_segments_with_feature(segments_column: list) -> list[int]:
     """ Returns a list with the total number of segments containing the specified
-    feature. The total number is referred to each text item """
+    chosen_feature. The total number is referred to each text item """
     return [len(segments) for segments in segments_column]
 
 
@@ -162,16 +162,16 @@ def total_count(column_counts: pd.Series) -> int:
 
 
 # Within the dataframe/partition sort the samples so that the text item with
-# the highest number of segments containing the feature figures at the top,
-# and the text with the lowest number of segments containing the feature is
+# the highest number of segments containing the chosen_feature figures at the top,
+# and the text with the lowest number of segments containing the chosen_feature is
 # at the bottom
 def sort_texts_descending(dataframe: pd.DataFrame, column: str) -> pd.DataFrame:
     """ Returns a dataframe sorted by the values from the specified column, in descending order """
     return dataframe.sort_values(by=column, ascending=False)
 
 
-# return [segments for segments in container if feature in segments]
-# result = feature_occurs(container, feature)
+# return [segments for segments in container if chosen_feature in segments]
+# result = feature_occurs(container, chosen_feature)
 
 # total_segments_with_features = df['Number of Segments with Feature Occurrence'].sum()
 # df['Total Segments'] = df['Segments'].apply(len)
@@ -184,61 +184,75 @@ def sort_texts_descending(dataframe: pd.DataFrame, column: str) -> pd.DataFrame:
 # Workflow
 # Set a parameter to separate the two partitions;
 # Process the texts within each subset;
-# Get the number of sequences containing the chosen feature;
-# Sort the two subsets in descending order (texts with more sequences-with-feature
-# on the top and texts with less sequences-with-feature at the bottom)
+# Get the number of sequences containing the chosen chosen_feature;
+# Sort the two subsets in descending order (texts with more sequences-with-chosen_feature
+# on the top and texts with less sequences-with-chosen_feature at the bottom)
 
 
 # Executing as standalone script
 if __name__ == '__main__':
-    # Define a target partition
-    # Get input user data by means of the input() function
-    path1 = input("Enter the directory path to the target partition: ")
-    dictionary1 = define_dictionary(path1)
-    df = create_df(dictionary1)
-    df['Lowercase Text'] = lowercase_corpus(df.Text)
-    df['Tokenized Text'] = tokenize_corpus(df['Lowercase Text'])
-    # Remove stopwords if necessary
-    # df['Text No Stopwords'] = zt.remove_stopwords_corpus(['and', 'in'], df['Tokenized Text'])
-    df['Segments'] = build_segments_corpus(df['Tokenized Text'], 1000)
-    df['Segments Count'] = segments_count(df['Segments'])
-    df['Feature Occurrence'] = feature_occurs_corpus(df['Segments'], 'sherlock')
-    df['Number of Segments with Feature'] = count_segments_with_feature(df['Feature Occurrence'])
-    df_sorted1 = sort_texts_descending(df, 'Number of Segments with Feature')
+    # Create a dataframe to which append the results
+    summary = pd.DataFrame({'Feature': [], 'Target Partition Ratio': [], 'Reference Partition Ratio': [], 'Zeta Value': []})
+    while True:
+        # Define a chosen_feature with respect to which calculate zeta
+        chosen_feature = input("Specify a feature: ")
+        # Define a target partition
+        # Get input user data by means of the input() function
+        path1 = input("Enter the directory path to the target partition: ")
+        dictionary1 = define_dictionary(path1)
+        df = create_df(dictionary1)
+        df['Lowercase Text'] = lowercase_corpus(df.Text)
+        df['Tokenized Text'] = tokenize_corpus(df['Lowercase Text'])
+        # Remove stopwords if necessary
+        # df['Text No Stopwords'] = zt.remove_stopwords_corpus(['and', 'in'], df['Tokenized Text'])
+        df['Segments'] = build_segments_corpus(df['Tokenized Text'], 1000)
+        df['Segments Count'] = segments_count(df['Segments'])
+        df['Feature Occurrence'] = feature_occurs_corpus(df['Segments'], chosen_feature)
+        df['Number of Segments with Feature'] = count_segments_with_feature(df['Feature Occurrence'])
+        df_sorted1 = sort_texts_descending(df, 'Number of Segments with Feature')
 
-    # Repeat the code to define the reference partition
-    path2 = input("Enter the directory path to the reference partition: ")
-    dictionary2 = define_dictionary(path2)
-    df = create_df(dictionary2)
-    df['Lowercase Text'] = lowercase_corpus(df.Text)
-    df['Tokenized Text'] = tokenize_corpus(df['Lowercase Text'])
-    # Remove stopwords if necessary
-    # df['Text No Stopwords'] = zt.remove_stopwords_corpus(['and', 'in'], df['Tokenized Text'])
-    df['Segments'] = build_segments_corpus(df['Tokenized Text'], 1000)
-    df['Segments Count'] = segments_count(df['Segments'])
-    df['Feature Occurrence'] = feature_occurs_corpus(df['Segments'], 'sherlock')
-    df['Number of Segments with Feature'] = count_segments_with_feature(df['Feature Occurrence'])
-    df_sorted2 = sort_texts_descending(df, 'Number of Segments with Feature')
+        # Repeat the code to define the reference partition
+        path2 = input("Enter the directory path to the reference partition: ")
+        dictionary2 = define_dictionary(path2)
+        df = create_df(dictionary2)
+        df['Lowercase Text'] = lowercase_corpus(df.Text)
+        df['Tokenized Text'] = tokenize_corpus(df['Lowercase Text'])
+        # Remove stopwords if necessary
+        # df['Text No Stopwords'] = zt.remove_stopwords_corpus(['and', 'in'], df['Tokenized Text'])
+        df['Segments'] = build_segments_corpus(df['Tokenized Text'], 1000)
+        df['Segments Count'] = segments_count(df['Segments'])
+        df['Feature Occurrence'] = feature_occurs_corpus(df['Segments'], 'sherlock')
+        df['Number of Segments with Feature'] = count_segments_with_feature(df['Feature Occurrence'])
+        df_sorted2 = sort_texts_descending(df, 'Number of Segments with Feature')
 
-    # Dataframes output
-    print(df_sorted1)
-    print(df_sorted2)
+        # Dataframes output
+        print(df_sorted1)
+        print(df_sorted2)
 
-    # Repeat for each partition
-    total_segments = total_count(df_sorted1['Segments Count'])
-    total_segments_with_features = total_count(df_sorted1['Number of Segments with Feature'])
-    print(f'Total of segments within the partition: ', total_segments)
-    print(f'Total of segments with feature within the partition: ', total_segments_with_features)
-    ratio1 = total_segments_with_features / total_segments
-    print(f'Ratio: ', ratio1)
+        # Repeat for each partition
+        total_segments = total_count(df_sorted1['Segments Count'])
+        total_segments_with_features = total_count(df_sorted1['Number of Segments with Feature'])
+        print(f'Total of segments within the target partition: ', total_segments)
+        print(f'Total of segments with chosen_feature within the target partition: ', total_segments_with_features)
+        ratio1 = total_segments_with_features / total_segments
+        print(f'Ratio: ', ratio1)
 
-    total_segments = total_count(df_sorted2['Segments Count'])
-    total_segments_with_features = total_count(df_sorted2['Number of Segments with Feature'])
-    print(f'Total of segments within the partition: ', total_segments)
-    print(f'Total of segments with feature within the partition: ', total_segments_with_features)
-    ratio2 = total_segments_with_features / total_segments
-    print(f'Ratio: ', ratio2)
+        total_segments = total_count(df_sorted2['Segments Count'])
+        total_segments_with_features = total_count(df_sorted2['Number of Segments with Feature'])
+        print(f'Total of segments within the reference partition: ', total_segments)
+        print(f'Total of segments with chosen_feature within the reference partition: ', total_segments_with_features)
+        ratio2 = total_segments_with_features / total_segments
+        print(f'Ratio: ', ratio2)
 
-    # Calculate Zeta – values range [-1,1] –
-    zeta = ratio1 - ratio2
-    print(f'Zeta value with reference to the chosen feature: ', zeta)
+        # Calculate Zeta – values range [-1,1] –
+        zeta = ratio1 - ratio2
+        print(f'Zeta value with reference to the chosen feature "', chosen_feature, '" : ', zeta)
+        summary.loc[len(summary.index)] = [chosen_feature, ratio1, ratio2, zeta]
+
+        repeat = input("Any other feature? (y/n): ")
+        if repeat.lower() != "y":
+            break
+    summary = summary.sort_values(by='Zeta Value', ascending=False)
+    # Save the definitive dataframe to a csv file
+    summary.to_csv('/home/iuser/Desktop/zeta-summary.csv')
+    print(summary)
