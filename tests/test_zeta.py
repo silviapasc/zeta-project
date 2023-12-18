@@ -8,7 +8,7 @@ from zeta_project.zeta import (set_cwd, read_text, define_dictionary,
                                tokenize, tokenize_corpus, build_segments,
                                build_segments_corpus, feature_occurs, feature_occurs_corpus,
                                count_segments_with_feature, sort_descending, remove_stopwords,
-                               remove_stopwords_corpus, segments_count, total_count, ratio, zeta)
+                               remove_stopwords_corpus, segments_count, total_count, ratio, zeta, fill_dataframe)
 
 
 # Test set_cwd() using the tmp_path fixture, which provides a temporary
@@ -223,3 +223,15 @@ def test_zeta():
     ratio_2 = 0.75
     expected_zeta = 0.32 - 0.75
     assert zeta(ratio_1, ratio_2) == expected_zeta
+
+
+def test_fill_dataframe():
+    # Define an empty dataframe
+    df = pd.DataFrame(columns=['A', 'B', 'C'])
+
+    # Add values
+    values = [1, 'string', 3]
+    df_updated = fill_dataframe(df, values)
+
+    # Check if the expected values are included within the dataframe
+    assert df_updated.equals(pd.DataFrame({'A': [1], 'B': ['string'], 'C': [3]}))
