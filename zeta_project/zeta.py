@@ -180,7 +180,7 @@ def zeta(ratio_1: float, ratio_2: float) -> float:
 # the highest number of segments containing the chosen_feature figures at the top,
 # and the text with the lowest number of segments containing the chosen_feature is
 # at the bottom
-def sort_texts_descending(dataframe: pd.DataFrame, column: str) -> pd.DataFrame:
+def sort_descending(dataframe: pd.DataFrame, column: str) -> pd.DataFrame:
     """ Returns a dataframe sorted by the values from the specified column, in descending order """
     return dataframe.sort_values(by=column, ascending=False)
 
@@ -224,7 +224,7 @@ if __name__ == '__main__':
         df['Segments Count'] = segments_count(df['Segments'])
         df['Feature Occurrence'] = feature_occurs_corpus(df['Segments'], chosen_feature)
         df['Number of Segments with Feature'] = count_segments_with_feature(df['Feature Occurrence'])
-        df_sorted1 = sort_texts_descending(df, 'Number of Segments with Feature')
+        df_sorted1 = sort_descending(df, 'Number of Segments with Feature')
         # df_sorted1 = df.sort_values(by='Number of Segments with Feature', ascending=False)
 
         # Repeat the code to define the reference partition
@@ -239,7 +239,7 @@ if __name__ == '__main__':
         df['Segments Count'] = segments_count(df['Segments'])
         df['Feature Occurrence'] = feature_occurs_corpus(df['Segments'], 'sherlock')
         df['Number of Segments with Feature'] = count_segments_with_feature(df['Feature Occurrence'])
-        df_sorted2 = sort_texts_descending(df, 'Number of Segments with Feature')
+        df_sorted2 = sort_descending(df, 'Number of Segments with Feature')
         # df_sorted2 = df.sort_values(by='Number of Segments with Feature', ascending=False)
 
         # Dataframes output

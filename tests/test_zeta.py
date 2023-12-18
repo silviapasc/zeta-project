@@ -8,7 +8,7 @@ from zeta_project.zeta import (set_cwd, read_text, define_dictionary,
                                tokenize, tokenize_corpus, build_segments,
                                build_segments_corpus, feature_occurs, feature_occurs_corpus,
                                count_segments_with_feature, sort_texts_descending, remove_stopwords,
-                               remove_stopwords_corpus, segments_count, total_count, ratio, zeta)
+                               remove_stopwords_corpus, segments_count, total_count, ratio, zeta, sort_descending)
 
 
 # Test set_cwd() using the tmp_path fixture, which provides a temporary
@@ -199,7 +199,7 @@ def test_dataframe():
     return pd.DataFrame(data)
 
 
-def test_sort_texts_descending(test_dataframe):
+def test_sort_descending(test_dataframe):
     column = 'Value'
     expected_df = pd.DataFrame({
         'Text': ['This is a text example.', 'Each text is related to a value.', 'The text with the highest value is '
@@ -207,7 +207,7 @@ def test_sort_texts_descending(test_dataframe):
         'Value': [3, 1, 5]
     })
     expected_df = expected_df.sort_values(by=column, ascending=False)
-    result = sort_texts_descending(test_dataframe, column)
+    result = sort_descending(test_dataframe, column)
     pd.testing.assert_frame_equal(result, expected_df)
 
 
