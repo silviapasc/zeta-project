@@ -1,12 +1,14 @@
+import os
+
+import pandas as pd
+import pytest
+
 from zeta_project.zeta import (set_cwd, read_text, define_dictionary,
                                create_df, lowercase, lowercase_corpus,
                                tokenize, tokenize_corpus, build_segments,
                                build_segments_corpus, feature_occurs, feature_occurs_corpus,
                                count_segments_with_feature, sort_texts_descending, remove_stopwords,
-                               remove_stopwords_corpus, segments_count, total_count)
-import pytest
-import os, re
-import pandas as pd
+                               remove_stopwords_corpus, segments_count, total_count, ratio, zeta)
 
 
 # Test set_cwd() using the tmp_path fixture, which provides a temporary
@@ -165,7 +167,7 @@ def test_total_count():
 
 
 def test_feature_occurs():
-    segment_list = [["This", "is", "a"], ["test", "."], ["Another", "test", "sentence"], ["with", "feature"]]
+    segment_list = [["This", "is", "a"], ["test", "."], ["Another", "test", "sentence"], ["with", "chosen_feature"]]
     feature = "test"
     expected_result = [["test", "."], ["Another", "test", "sentence"]]
     assert feature_occurs(segment_list, feature) == expected_result
@@ -207,3 +209,17 @@ def test_sort_texts_descending(test_dataframe):
     expected_df = expected_df.sort_values(by=column, ascending=False)
     result = sort_texts_descending(test_dataframe, column)
     pd.testing.assert_frame_equal(result, expected_df)
+
+
+def test_ratio():
+    value_1 = 27
+    value_2 = 85
+    expected_ratio = 27 / 85
+    assert ratio(value_1, value_2) == expected_ratio
+
+
+def test_zeta():
+    ratio_1 = 0.32
+    ratio_2 = 0.75
+    expected_zeta = 0.32 - 0.75
+    assert zeta(ratio_1, ratio_2) == expected_zeta
