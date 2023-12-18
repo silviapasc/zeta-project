@@ -7,8 +7,8 @@ from zeta_project.zeta import (set_cwd, read_text, define_dictionary,
                                create_df, lowercase, lowercase_corpus,
                                tokenize, tokenize_corpus, build_segments,
                                build_segments_corpus, feature_occurs, feature_occurs_corpus,
-                               count_segments_with_feature, sort_texts_descending, remove_stopwords,
-                               remove_stopwords_corpus, segments_count, total_count, ratio, zeta, sort_descending)
+                               count_segments_with_feature, sort_descending, remove_stopwords,
+                               remove_stopwords_corpus, segments_count, total_count, ratio, zeta)
 
 
 # Test set_cwd() using the tmp_path fixture, which provides a temporary
