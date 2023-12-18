@@ -3,6 +3,7 @@ import os
 import re
 
 import pandas as pd
+from pandas import DataFrame
 
 
 # Set the proper working directory path
@@ -166,7 +167,7 @@ def total_count(column_counts: pd.Series) -> int:
 def ratio(segments_with_feature_count: int, segments_count: int) -> float:
     """ Returns the percentage of segments containing the specified feature
     over all segments of a partition"""
-    return segments_with_feature_count/segments_count
+    return segments_with_feature_count / segments_count
 
 
 # Zeta
@@ -174,6 +175,13 @@ def zeta(ratio_1: float, ratio_2: float) -> float:
     """ Returns the percentage of how consistently the specified feature
     is used within the target partition compared to the reference partition"""
     return ratio_1 - ratio_2
+
+
+def fill_dataframe(dataframe: pd.DataFrame, values: list) -> pd.DataFrame:
+    """ Inserts the specified list of values into the existing dataframe. The number of values
+    must correspond to the number of labels in the dataframe"""
+    dataframe.loc[len(dataframe.index)] = values
+    return dataframe
 
 
 # Within the dataframe/partition sort the samples so that the text item with
@@ -207,7 +215,8 @@ def sort_descending(dataframe: pd.DataFrame, column: str) -> pd.DataFrame:
 # Executing as standalone script
 if __name__ == '__main__':
     # Create a dataframe to which append the results
-    summary = pd.DataFrame({'Feature': [], 'Target Partition Ratio': [], 'Reference Partition Ratio': [], 'Zeta Value': []})
+    summary: DataFrame = pd.DataFrame(
+        {'Feature': [], 'Target Partition Ratio': [], 'Reference Partition Ratio': [], 'Zeta Value': []})
     while True:
         # Define a chosen_feature with respect to which calculate zeta
         chosen_feature = input("Specify a feature: ")
@@ -251,26 +260,28 @@ if __name__ == '__main__':
         total_segments_with_features = total_count(df_sorted1['Number of Segments with Feature'])
         print(f'Total of segments within the target partition: ', total_segments)
         print(f'Total of segments with chosen_feature within the target partition: ', total_segments_with_features)
-        ratio1 = total_segments_with_features / total_segments
+        ratio1 = ratio(total_segments_with_features, total_segments)
         print(f'Ratio: ', ratio1)
 
         total_segments = total_count(df_sorted2['Segments Count'])
         total_segments_with_features = total_count(df_sorted2['Number of Segments with Feature'])
         print(f'Total of segments within the reference partition: ', total_segments)
         print(f'Total of segments with chosen_feature within the reference partition: ', total_segments_with_features)
-        ratio2 = total_segments_with_features / total_segments
+        ratio2 = ratio(total_segments_with_features, total_segments)
         print(f'Ratio: ', ratio2)
 
         # Calculate Zeta – values range [-1,1] –
-        zeta = ratio1 - ratio2
-        print(f'Zeta value with reference to the chosen feature "', chosen_feature, '" : ', zeta)
-        summary.loc[len(summary.index)] = [chosen_feature, ratio1, ratio2, zeta]
+        zeta_value = zeta(ratio1, ratio2)
+        print(f'Zeta value with reference to the chosen feature "', chosen_feature, '" : ', zeta_value)
+        fill_dataframe(summary, [chosen_feature, ratio1, ratio2, zeta_value])
+        # summary.loc[len(summary.index)] = [chosen_feature, ratio1, ratio2, zeta]
 
         repeat = input("Any other feature? (y/n): ")
         if repeat.lower() != "y":
             break
     # Use the same sort_descending()
-    summary = summary.sort_values(by='Zeta Value', ascending=False)
+    # summary = summary.sort_values(by='Zeta Value', ascending=False)
+    summary = sort_descending(summary, 'Zeta Value')
     # Save the definitive dataframe to a csv file
     # summary.to_csv('zeta-summary.csv')
     print(summary)
