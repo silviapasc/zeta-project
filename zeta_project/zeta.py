@@ -215,8 +215,7 @@ def sort_descending(dataframe: pd.DataFrame, column: str) -> pd.DataFrame:
 # Executing as standalone script
 if __name__ == '__main__':
     # Create a dataframe to which append the results
-    summary: DataFrame = pd.DataFrame(
-        {'Feature': [], 'Target Partition Ratio': [], 'Reference Partition Ratio': [], 'Zeta Value': []})
+    summary: DataFrame = pd.DataFrame(columns=['Feature', 'Target Partition Ratio', 'Reference Partition Ratio', 'Zeta Value'])
     while True:
         # Define a chosen_feature with respect to which calculate zeta
         chosen_feature = input("Specify a feature: ")
