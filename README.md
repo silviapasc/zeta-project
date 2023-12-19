@@ -1,8 +1,7 @@
-### Workflow
+# Zeta-Projekt
 
-+ create github repo
-+ within the dir SoftwareProjekte create a poetry project with the cmd _poetry new project-name_ (the project will then contain all the basic files)
-+ initialize the _project-name_ folder in git
-+ open the _project-name_ folder in in PyCharm and activate the Poetry venv (automatically set by PyCharm)
-+ push to the remote collection
-+ in the terminal digit _deactivate_ to simply deactivate the Poetry venv
+Das Zeta-Projekt implementiert einfache Funktionen in Python zur Berechnung von Burrows' Zeta, einer in der Computerlinguistik gebräuchlichen Maßeinheit zum kontrastiven Lesen von Textkorpora.
+
+## Lizenz
+
+Dieses Projekt ist unter der [GPL-3-Lizenz](https://opensource.org/license/gpl-3-0/) lizenziert.
