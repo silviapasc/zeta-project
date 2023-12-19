@@ -1,8 +1,8 @@
 [tool.poetry]
 name = "zeta-project"
 version = "0.1.0"
-description = "zeta-project is a test project to create a simple python library within a Poetry virtual environment"
-authors = ["Silvia Pasciullo <pasciullo.s@gmail.com>"]
+description = "zeta-project is a simple Python library with the implementation of Burrow's Zeta"
+authors = ["Silvia Pasciullo <silvia.pasciullo@stud-mail.uni-wuerzburg.de>"]
 readme = "README.md"
 
 
