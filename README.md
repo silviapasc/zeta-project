@@ -4,6 +4,22 @@ Das Zeta-Projekt implementiert einfache Funktionen in Python zur Berechnung von 
 
 In der Tatsache können Nutzer:innen anhand der einzelnen Funktionen Texte tokenisieren, Listen von Tokens segmentieren, Stoppwörter und uninteressante Werte filtern, Ergebnisse sortieren. Alternativ kann das Skript auch als eigenständiges Programm ausgeführt werden, wobei die zur Berechnung der Zeta-Werte erforderlichen Daten direkt von den Benutzern:innen eingegeben werden.
 
+## Dokumentation
+
+
+
+## Installation
+
+Zeta-Projekt für Python >= 3.10 und alle seine Abhängigkeiten können nach den Anweisungen im [Python Packaging User Guide] (https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/) installiert werden. 
+
+Zum Beispiel kann das Paket direkt aus seinem Git-Repository wie folgt installiert werden:
+
+```bash
+pip install zeta-project@git+https://github.com/silviapasc/zeta-project
+```
+
+Es wird außerdem empfohlen, eine virtuelle Umgebung einzurichten, in der das installierte Paket gespeichert wird.
+
 ## Lizenz
 
 Dieses Projekt ist unter der [GPL-3-Lizenz](https://opensource.org/license/gpl-3-0/) lizenziert.
