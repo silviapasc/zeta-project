@@ -10,7 +10,7 @@ In der Tatsache können Nutzer:innen anhand der einzelnen Funktionen Texte token
 
 ## Installation
 
-Zeta-Projekt für Python >= 3.10 und alle seine Abhängigkeiten können nach den Anweisungen im [PythonPackagingUserGuide](https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/) installiert werden. 
+Zeta-Projekt für Python >= 3.10 und alle seine Abhängigkeiten können nach den Anweisungen im [Python Packaging User Guide](https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/) installiert werden. 
 
 Zum Beispiel kann das Paket direkt aus seinem Git-Repository wie folgt installiert werden:
 
