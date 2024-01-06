@@ -35,6 +35,7 @@ def set_cwd(current_path: str) -> str:
 def read_text(filename: str) -> str:
     """ Reads the text file content, returning the specified number of bytes.
     Default -1, which means the whole file"""
+    # How to explain str instead of bytes?
     with open(filename, 'rt', encoding='utf-8') as file:
         return file.read()
 
@@ -230,6 +231,7 @@ if __name__ == '__main__':
     # Ask for condition
     # Use boolean indexing and invert mask by ~
     # Operators ==, !=, >, <
+    # Define a function for this!
     condition = merged['subgenre'] == 'detective'
     zp = merged[condition].copy()
     vp = merged[~condition].copy()
@@ -241,12 +243,12 @@ if __name__ == '__main__':
         # Define a target partition
         # Get input user data by means of the input() function
 
-
         # Define a chosen_feature with respect to which calculate zeta
         chosen_feature = input("Specify a feature: ")
 
         # Process data within each partition
-        #zp['Lowercase Text'] = lowercase_corpus(zp.Text)
+        # sdabi
+        # zp['Lowercase Text'] = lowercase_corpus(zp.Text)
         #zp['Tokenized Text'] = tokenize_corpus(zp['Lowercase Text'])
         # Remove stopwords if necessary
         # df['Text No Stopwords'] = zt.remove_stopwords_corpus(['and', 'in'], df['Tokenized Text'])

@@ -62,8 +62,9 @@ def test_create_df_non_empty_dict():
     assert isinstance(df, pd.DataFrame)
     assert not df.empty
     assert df.shape[0] == len(corpus_dict)
-    assert df.columns.tolist() == ['File Name', 'Text']
-    assert df['File Name'].tolist() == list(corpus_dict.keys())
+    # 'idno' was 'File Name'! And a file name is what appears in corpus_dict! Be careful
+    assert df.columns.tolist() == ['idno', 'Text']
+    assert df['idno'].tolist() == list(corpus_dict.keys())
     assert df['Text'].tolist() == list(corpus_dict.values())
 
 
