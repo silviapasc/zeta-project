@@ -35,7 +35,7 @@ def set_cwd(current_path: str) -> str:
 def read_text(filename: str) -> str:
     """ Reads the text file content, returning the specified number of bytes.
     Default -1, which means the whole file"""
-    # How to explain str instead of bytes?
+    # How to explain str instead of bytes???
     with open(filename, 'rt', encoding='utf-8') as file:
         return file.read()
 
