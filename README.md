@@ -6,6 +6,7 @@ In der Tatsache können Nutzer:innen anhand der einzelnen Funktionen Texte token
 
 ## Dokumentation
 
+Die Zeta-Projekt-Dokumentation wurde mit [Sphinx](https://www.sphinx-doc.org/en/master/index.html) unter Verwendung von *reStructuredText* erstellt und kann lokal abgerufen werden.
 
 
 ## Installation
