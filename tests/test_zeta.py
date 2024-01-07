@@ -8,7 +8,8 @@ from zeta_project.zeta import (set_cwd, read_text, define_dictionary,
                                tokenize, tokenize_corpus, build_segments,
                                build_segments_corpus, feature_occurs, feature_occurs_corpus,
                                count_segments_with_feature, sort_descending, remove_stopwords,
-                               remove_stopwords_corpus, segments_count, total_count, ratio, zeta, fill_dataframe)
+                               remove_stopwords_corpus, segments_count, define_partitions,
+                               total_count, ratio, zeta, fill_dataframe)
 
 
 # Test set_cwd() using the tmp_path fixture, which provides a temporary
@@ -161,6 +162,19 @@ def test_segments_count():
     pd.testing.assert_series_equal(segments_count(segments_col), expected_result)
 
 
+@pytest.fixture
+def test_dataframe():
+    data = {'Text': ['Text 1', 'Text 2', 'Text 3', 'Text 4', 'Text 5'],
+            'Value': ['a', 'b', 'a', 'c', 'a']}
+    return pd.DataFrame(data)
+
+
+def test_define_partitions(test_dataframe):
+    target, reference = define_partitions(test_dataframe, 'Value', 'a')
+    assert target.equals(pd.DataFrame({'Text': ['Text 1', 'Text 3', 'Text 5'], 'Value': ['a', 'a', 'a']}, index=[0, 2, 4]))
+    assert reference.equals(pd.DataFrame({'Text': ['Text 2', 'Text 4'], 'Value': ['b', 'c']}, index=[1, 3]))
+
+
 def test_total_count():
     single_counts = pd.Series([1, 2, 3, 4, 5])
     expected_result = 1 + 2 + 3 + 4 + 5
@@ -191,7 +205,7 @@ def test_count_segments_with_feature():
 
 # Create a test dataframe for this test case
 @pytest.fixture
-def test_dataframe():
+def test_dataframe1():
     data = {
         'Text': ['This is a text example.', 'Each text is related to a value.', 'The text with the highest value is '
                                                                                 'displayed at the top.'],
@@ -200,7 +214,7 @@ def test_dataframe():
     return pd.DataFrame(data)
 
 
-def test_sort_descending(test_dataframe):
+def test_sort_descending(test_dataframe1):
     column = 'Value'
     expected_df = pd.DataFrame({
         'Text': ['This is a text example.', 'Each text is related to a value.', 'The text with the highest value is '
@@ -208,7 +222,7 @@ def test_sort_descending(test_dataframe):
         'Value': [3, 1, 5]
     })
     expected_df = expected_df.sort_values(by=column, ascending=False)
-    result = sort_descending(test_dataframe, column)
+    result = sort_descending(test_dataframe1, column)
     pd.testing.assert_frame_equal(result, expected_df)
 
 
