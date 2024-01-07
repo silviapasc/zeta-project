@@ -134,6 +134,7 @@ def define_partitions(dataframe: pd.DataFrame, col_name: str, col_value: str) ->
      in a way that all the dataframe rows showing that column value are grouped into the target partition,
      while the remaining rows are grouped into the reference partition. """
     split_condition = dataframe[col_name] == col_value
+    # Explain the meaning of the copy() method!
     target_partition = dataframe[split_condition].copy()
     reference_partition = dataframe[~split_condition].copy()
     return target_partition, reference_partition
@@ -220,7 +221,7 @@ if __name__ == '__main__':
     # Define function?
     df['idno'] = df['idno'].str.replace('.txt$', '', regex=True)
 
-    # Preprocess the whole corpus texts
+    # Preprocess all the corpus texts
     df['Lowercase Text'] = lowercase_corpus(df.Text)
     df['Tokenized Text'] = tokenize_corpus(df['Lowercase Text'])
     # Remove stopwords if necessary. The stopwords list could be also a file!!!
@@ -242,65 +243,30 @@ if __name__ == '__main__':
     print(merged)
 
     # Split merged dataframe into target and reference partition based on metadata values
-    # condition_col = input("Specify a metadata column for the split: ")
-    # condition_value = input("Specify a metadata column value for the split: ")
     meta_col, meta_value = [item for item in input("Specify the metadata column name and a corresponding value to "
-                                                   "define the partitions: ").split()]
-    # Split merged dataframe based on set condition
-    # Ask for condition
-    # Use boolean indexing and invert mask by ~
-    # Operators ==, !=, >, <
-    # Define a function for this!
-    # merged.columns == 'subgenre'
-    # condition = merged['subgenre'] == 'detective'
-    df_tupel = define_partitions(merged, meta_col, meta_value)
-    zp = df_tupel[0]
-    vp = df_tupel[1]
-
-
-    # condition = merged[meta_col] == meta_value
-    # zp = merged[condition].copy()
-    # vp = merged[~condition].copy()
+                                                   "split the corpus into target and reference partition\n (use shift "
+                                                   "key to separate): ").split()]
+    zp, vp = define_partitions(merged, meta_col, meta_value)
 
     while True:
-        # Define a chosen_feature with respect to which calculate zeta
-        # chosen_feature = input("Specify a feature: ")
-
-        # Define a target partition
-        # Get input user data by means of the input() function
-
-        # Define a chosen_feature with respect to which calculate zeta
+        # Specify a feature with respect to which calculate zeta
         chosen_feature = input("Specify a feature: ")
 
-        # Process data within each partition
-        # sdabi
-        # zp['Lowercase Text'] = lowercase_corpus(zp.Text)
-        #zp['Tokenized Text'] = tokenize_corpus(zp['Lowercase Text'])
-        # Remove stopwords if necessary
-        # df['Text No Stopwords'] = zt.remove_stopwords_corpus(['and', 'in'], df['Tokenized Text'])
-        #zp['Segments'] = build_segments_corpus(zp['Tokenized Text'], 1000)
-        #zp['Segments Count'] = segments_count(zp['Segments'])
-        # Here for each partition
+        # Process data within target partition
         zp['Feature Occurrence'] = feature_occurs_corpus(zp['Segments'], chosen_feature)
         zp['Number of Segments with Feature'] = count_segments_with_feature(zp['Feature Occurrence'])
         zp_sorted = sort_descending(zp, 'Number of Segments with Feature')
 
-        #vp['Lowercase Text'] = lowercase_corpus(vp.Text)
-        #vp['Tokenized Text'] = tokenize_corpus(vp['Lowercase Text'])
-        # Remove stopwords if necessary
-        # df['Text No Stopwords'] = zt.remove_stopwords_corpus(['and', 'in'], df['Tokenized Text'])
-        #vp['Segments'] = build_segments_corpus(vp['Tokenized Text'], 1000)
-        #vp['Segments Count'] = segments_count(vp['Segments'])
-        # Here for each partition
+        # Process data within reference partition
         vp['Feature Occurrence'] = feature_occurs_corpus(vp['Segments'], chosen_feature)
         vp['Number of Segments with Feature'] = count_segments_with_feature(vp['Feature Occurrence'])
         vp_sorted = sort_descending(vp, 'Number of Segments with Feature')
 
-        # Dataframes output
+        # Target partition and reference partition dataframes output
         print(zp_sorted)
         print(vp_sorted)
 
-        # Repeat for each partition
+        # Count total segments, segments containing the feature and ratio of that within the target partition
         total_segments = total_count(zp_sorted['Segments Count'])
         total_segments_with_features = total_count(zp_sorted['Number of Segments with Feature'])
         print(f'Total of segments within the target partition: ', total_segments)
@@ -308,6 +274,7 @@ if __name__ == '__main__':
         zp_ratio = ratio(total_segments_with_features, total_segments)
         print(f'Ratio: ', zp_ratio)
 
+        # Count total segments, segments containing the feature and ratio of that within the reference partition
         total_segments = total_count(vp_sorted['Segments Count'])
         total_segments_with_features = total_count(vp_sorted['Number of Segments with Feature'])
         print(f'Total of segments within the target partition: ', total_segments)
@@ -315,16 +282,16 @@ if __name__ == '__main__':
         vp_ratio = ratio(total_segments_with_features, total_segments)
         print(f'Ratio: ', vp_ratio)
 
-        # Calculate Zeta – values range [-1,1] –
+        # Calculate Zeta, with values range [-1,1]
         zeta_value = zeta(zp_ratio, vp_ratio)
         print(f'Zeta value with reference to the chosen feature "', chosen_feature, '" : ', zeta_value)
         fill_dataframe(summary, [chosen_feature, zp_ratio, vp_ratio, zeta_value])
 
-        repeat = input("Any other feature? (y/n): ")
-        if repeat.lower() != "y":
+        new_feature = input("Any other feature? (y/n): ")
+        if new_feature.lower() != "y":
             break
-    # Use the same sort_descending()
-    # summary = summary.sort_values(by='Zeta Value', ascending=False)
+
+    # Sort the results dataframe by descending values of zeta
     summary = sort_descending(summary, 'Zeta Value')
     # Eventually save the definitive dataframe to a csv file
     # summary.to_csv('zeta-summary.csv')
