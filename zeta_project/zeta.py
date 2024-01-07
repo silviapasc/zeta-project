@@ -1,9 +1,10 @@
 # Import the required modules
 import os
 import re
+from typing import Tuple, Any
 
 import pandas as pd
-from pandas import DataFrame
+from pandas import DataFrame, Series
 
 
 # Set the proper working directory path
@@ -126,6 +127,18 @@ def segments_count(segments_col: pd.Series) -> pd.Series:
     return segments_col.apply(len)
 
 
+# Split the dataframe into 2 partitions based on a chosen value from a selected column
+def define_partitions(dataframe: pd.DataFrame, col_name: str, col_value: str) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """ Splits a dataframe into two partitions, one referred to as the target partition and the other
+     as the reference partition. The split is based on the specified dataframe column and a column value,
+     in a way that all the dataframe rows showing that column value are grouped into the target partition,
+     while the remaining rows are grouped into the reference partition. """
+    split_condition = dataframe[col_name] == col_value
+    target_partition = dataframe[split_condition].copy()
+    reference_partition = dataframe[~split_condition].copy()
+    return target_partition, reference_partition
+
+
 # Consider now these subsets of tokens as the unit to check if the chosen chosen_feature
 # occurs within the texts. If the chosen_feature occurs at least once, this is what matters
 def feature_occurs(segments_list: list, feature: str) -> list:
@@ -196,45 +209,58 @@ def sort_descending(dataframe: pd.DataFrame, column: str) -> pd.DataFrame:
 
 # Executing as standalone script
 if __name__ == '__main__':
-    # Create a dataframe to which append the results
+    # First create a dataframe to which append the results
     summary: DataFrame = pd.DataFrame(
         columns=['Feature', 'Target Partition Ratio', 'Reference Partition Ratio', 'Zeta Value'])
 
-    path1 = input("Enter the directory path to the target partition: ")
-    dictionary1 = define_dictionary(path1)
-    df = create_df(dictionary1)
+    corpus_path = input("Enter the directory path to the text corpus: ")
+    dictionary = define_dictionary(corpus_path)
+    df = create_df(dictionary)
     # Extra to remove file extension suffix and make it match with the metadata table!
+    # Define function?
     df['idno'] = df['idno'].str.replace('.txt$', '', regex=True)
 
-    # Preprocess text
+    # Preprocess the whole corpus texts
     df['Lowercase Text'] = lowercase_corpus(df.Text)
     df['Tokenized Text'] = tokenize_corpus(df['Lowercase Text'])
-    # Remove stopwords if necessary
-    # df['Text No Stopwords'] = df.remove_stopwords_corpus(['and', 'in'], df['Tokenized Text'])
-    # Eventually ask user to set segments length!
-    df['Segments'] = build_segments_corpus(df['Tokenized Text'], 1000)
+    # Remove stopwords if necessary. The stopwords list could be also a file!!!
+    # stopwords = input("Add a list of stopwords (empty as default value): ")
+    # df['Text No Stopwords'] = remove_stopwords_corpus(list(stopwords), df['Tokenized Text'])
+    # Set segments length
+    segment_length = input("Specify the desired segment length (in tokens): ")
+    df['Segments'] = build_segments_corpus(df['Tokenized Text'], int(segment_length))
+    # df['Segments'] = build_segments_corpus(df['Text No Stopwords'], int(segment_length))
     df['Segments Count'] = segments_count(df['Segments'])
-    #df['Feature Occurrence'] = feature_occurs_corpus(df['Segments'], chosen_feature)
-    #df['Number of Segments with Feature'] = count_segments_with_feature(df['Feature Occurrence'])
     print(df)
 
-    # Get metadata and read it to dataframe
+    # Get metadata and read it to a dataframe
     meta_path = input("Enter the directory path to the metadata: ")
     meta = pd.read_csv(meta_path, sep='\t', encoding='UTF-8')
 
-    # Merge corpus dataframe with metadata dataframe
-    # Here function
-    merged = df.merge(meta, on='idno', how='left')
+    # Merge text corpus dataframe with metadata dataframe
+    merged = df.merge(meta, how='left', on='idno')
     print(merged)
 
+    # Split merged dataframe into target and reference partition based on metadata values
+    # condition_col = input("Specify a metadata column for the split: ")
+    # condition_value = input("Specify a metadata column value for the split: ")
+    meta_col, meta_value = [item for item in input("Specify the metadata column name and a corresponding value to "
+                                                   "define the partitions: ").split()]
     # Split merged dataframe based on set condition
     # Ask for condition
     # Use boolean indexing and invert mask by ~
     # Operators ==, !=, >, <
     # Define a function for this!
-    condition = merged['subgenre'] == 'detective'
-    zp = merged[condition].copy()
-    vp = merged[~condition].copy()
+    # merged.columns == 'subgenre'
+    # condition = merged['subgenre'] == 'detective'
+    df_tupel = define_partitions(merged, meta_col, meta_value)
+    zp = df_tupel[0]
+    vp = df_tupel[1]
+
+
+    # condition = merged[meta_col] == meta_value
+    # zp = merged[condition].copy()
+    # vp = merged[~condition].copy()
 
     while True:
         # Define a chosen_feature with respect to which calculate zeta
