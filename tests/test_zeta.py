@@ -54,36 +54,43 @@ def test_define_dictionary(tmp_path):
     assert result == {"file1.txt": "This is a text file", "file2.txt": "This is another text file"}
 
 
-# Test case for a non-empty corpus_dict
+# Test case for a non-empty dataframe
 def test_create_df_non_empty_dict():
     # Define a dictionary
     corpus_dict = {'file1.txt': 'This is file #1.', 'file2.txt': 'This is file #2.'}
+
     # Define a pandas dataframe from the above dictionary by means of the function under test
     df = create_df(corpus_dict)
+
     # Assert the basic characteristics for a non-empty dataframe
     assert isinstance(df, pd.DataFrame)
     assert not df.empty
     assert df.shape[0] == len(corpus_dict)
-    # 'idno' was 'File Name'! And a file name is what appears in corpus_dict!
+    # The column field 'idno' is internally set in create_df()
     assert df.columns.tolist() == ['idno', 'Text']
     assert df['idno'].tolist() == list(corpus_dict.keys())
     assert df['Text'].tolist() == list(corpus_dict.values())
 
 
-# Test case for an empty corpus_dict
+# Test case for an empty dataframe
 def test_create_df_empty_dict():
     # Define an empty dictionary
     corpus_dict = {}
+
     # Define a pandas dataframe from the above dictionary by means of the function under test
     df = create_df(corpus_dict)
+
     # Assert the basic characteristics for an empty dataframe
     assert isinstance(df, pd.DataFrame)
     assert df.empty
 
 
-# Test case for a corpus_dict with duplicate file names
+# Test case for a dataframe with duplicate file names
 def test_create_df_duplicate_file_names():
+    # Define a dictionary
     corpus_dict = {'file1.txt': 'This is file #1.', 'file1.txt': 'This is a duplicate file #1.'}
+
+    # Raise a ValueError exception in case of duplicate file names
     with pytest.raises(Exception) as e:
         # In the block, call the function that is expected to fail
         create_df(corpus_dict)
@@ -94,6 +101,8 @@ def test_create_df_duplicate_file_names():
 def test_lowercase():
     # Assign a partial uppercase text to the upper_text variable
     upper_text = 'Change this Text to LÖWERCASE'
+
+    # Call the function under test and check if returned and expected content match
     assert lowercase(upper_text) == 'change this text to löwercase'
 
 
@@ -101,9 +110,12 @@ def test_lowercase():
 def test_lowercase_corpus():
     # Define a list with partial uppercase text
     upper_list = ['First UPPER TEXT', '2ND UppeR TexT']
+
+    # Call the function under test and check if returned and expected content match
     assert lowercase_corpus(upper_list) == ['first upper text', '2nd upper text']
 
 
+# Test case for test_tokenize() function
 def test_tokenize():
     # The 're' module has to be imported for this test case
     # Define some string texts and assign them to a variable
@@ -111,64 +123,123 @@ def test_tokenize():
     text2 = "This is a test @123.com http//test.com"
     text3 = "Can't you get'em all?"
 
+    # Define expected lists of tokens for the corresponding 'text1', 'text2', 'text3'
     expected_tokens1 = ["Hello", "world"]
     expected_tokens2 = ["This", "is", "a", "test", "123com", "httptestcom"]
     expected_tokens3 = ["Cant", "you", "getem", "all"]
 
+    # Call the function under test and check if returned and expected content match
     assert tokenize(text1) == expected_tokens1
     assert tokenize(text2) == expected_tokens2
     assert tokenize(text3) == expected_tokens3
 
 
+# Test case for tokenize_corpus() function
 def test_tokenize_corpus():
     # Define a list of texts to be split into tokens
     texts_list = ["This is a test.", "Another @my-test.com test!"]
+
     # Note that no punctuation is included because of test_tokenize()
     expected_result = [["This", "is", "a", "test"], ["Another", "mytestcom", "test"]]
+
+    # Call the function under test and check if returned and expected content match
     assert tokenize_corpus(texts_list) == expected_result
 
 
+# Test case for remove_stopwords() function
 def test_remove_stopwords():
+    # Define a list of stopwords
     stopwords = ['a', 'and', 'is']
+
+    # Define a list of string tokens
     tokenized_text = ['this', 'is', 'a', 'test']
+
+    # Define a list of tokens which are no stopwords
     expected_result = ['this', 'test']
+
+    # Call the function under test and check if returned and expected content match
     assert remove_stopwords(stopwords, tokenized_text) == expected_result
 
 
+# Test case for remove_stopwords_corpus() function
 def test_remove_stopwords_corpus():
+    # Define a list of stopwords
     stopwords = ['a', 'and', 'is']
+
+    # Define a list of string tokens lists
     tokens_col = [['this', 'is', 'a', 'test'], ['and', 'this', 'is', 'another', 'test']]
+
+    # Define a list of all tokens lists, that do not include stopwords
     expected_result = [['this', 'test'], ['this', 'another', 'test']]
+
+    # Call the function under test and check if returned and expected content match
     assert remove_stopwords_corpus(stopwords, tokens_col) == expected_result
 
 
+# Test case for replace_pattern_in_column() function
 def test_replace_pattern_in_column():
+    # Define a pandas series containing a list of strings
     series = pd.Series(['text1.txt', 'text2.pdf', 'text3.txt'])
+
+    # Call the function under test and save the result into a variable
     result = replace_pattern_in_column(series, '.txt', '')
+
+    # Assert that returned and expected content match
     assert result.equals(pd.Series(['text1', 'text2.pdf', 'text3']))
 
 
+# Test case for define_partitions() function
+def test_define_partitions(test_dataframe):
+    # Call the function under test and save the result into a variables pair
+    target, reference = define_partitions(test_dataframe, 'Value', 'a')
+
+    # Assert that returned and expected content match
+    assert target.equals(pd.DataFrame({'Text': ['Text 1', 'Text 3', 'Text 5'], 'Value': ['a', 'a', 'a']}, index=[0, 2, 4]))
+    assert reference.equals(pd.DataFrame({'Text': ['Text 2', 'Text 4'], 'Value': ['b', 'c']}, index=[1, 3]))
+
+
+# Test case for build_segments() function
 def test_build_segments():
+    # Create a list of string tokens
     tokens = ["A", "first", "segment", ".", "Here", "is", "a", "second", "."]
+
+    # Set the parameter 'segment_length'
     segment_length = 3
+
+    # Save the function expected result into a variable
     expected_result = [["A", "first", "segment"], [".", "Here", "is"], ["a", "second", "."]]
+
+    # Call the function under test and assert that returned and expected content match
     assert build_segments(tokens, segment_length) == expected_result
 
 
+# Test case for build_segments_corpus() function
 def test_build_segments_corpus():
+    # Create a list of string tokens lists
     tokens_lists = [["The", "first", "text", "ends", "."], ["The", "second", "one", "too", "."]]
+
+    # Set the parameter 'segment_length'
     segment_len = 3
+
+    # Save the function expected result into a variable
     expected_result = [[["The", "first", "text"], ["ends", "."]], [["The", "second", "one"], ["too", "."]]]
+
+    # Call the function under test and assert that returned and expected content match
     assert build_segments_corpus(tokens_lists, segment_len) == expected_result
 
 
+# Test case for segments_count() function
 def test_segments_count():
+    # Define pandas series containing a list of string sublists and a list of integer values
     segments_col = pd.Series([[["The", "first", "text"], ["ends", "."]], [["The", "second"], ["one", "too"], ["."]]])
     expected_result = pd.Series([2, 3])
-    # Check that left and right Series are equal
+
+    # Assert that the result of the function under test and the 'expected_result' variable match
     pd.testing.assert_series_equal(segments_count(segments_col), expected_result)
 
 
+# Test case for total_count() function
+# Create a test dataframe for this test case
 @pytest.fixture
 def test_dataframe():
     data = {'Text': ['Text 1', 'Text 2', 'Text 3', 'Text 4', 'Text 5'],
@@ -176,26 +247,34 @@ def test_dataframe():
     return pd.DataFrame(data)
 
 
-def test_define_partitions(test_dataframe):
-    target, reference = define_partitions(test_dataframe, 'Value', 'a')
-    assert target.equals(pd.DataFrame({'Text': ['Text 1', 'Text 3', 'Text 5'], 'Value': ['a', 'a', 'a']}, index=[0, 2, 4]))
-    assert reference.equals(pd.DataFrame({'Text': ['Text 2', 'Text 4'], 'Value': ['b', 'c']}, index=[1, 3]))
-
-
 def test_total_count():
+    # Define a pandas series of integer values
     single_counts = pd.Series([1, 2, 3, 4, 5])
+
+    # Save the sum of integer values into a variable
     expected_result = 1 + 2 + 3 + 4 + 5
+
+    # Call the function under test and check if returned and expected content match
     assert total_count(single_counts) == expected_result
 
 
+# Test case for feature_occurs() function
 def test_feature_occurs():
+    # Define a list of tokens segments
     segment_list = [["This", "is", "a"], ["test", "."], ["Another", "test", "sentence"], ["with", "chosen_feature"]]
+
+    # Define a feature to be found within the segments and save it into a variable
     feature = "test"
+
+    # Define a list of expected tokens segments
     expected_result = [["test", "."], ["Another", "test", "sentence"]]
+
+    # Call the function under test and check if returned and expected content match
     assert feature_occurs(segment_list, feature) == expected_result
 
 
-# Basically this is the same function as above, just applied to all samples (i.e. lists
+# Test case for feature_occurs_corpus() function
+# Basically this is the same function as the one described above, but applied to all samples (i.e. lists
 # of segments) from a dataframe column
 def test_feature_occurs_corpus():
     segment_list = [[["Find", "a", "hashtag"], ["here", "."]], [["Another", "test", "sentence"], ["with", "hashtag"]]]
@@ -204,9 +283,15 @@ def test_feature_occurs_corpus():
     assert feature_occurs_corpus(segment_list, feature) == expected_result
 
 
+# Test case for count_segments_with_feature() function
 def test_count_segments_with_feature():
+    # Define a list of nested tokens segments
     segments = [[["Find", "a", "hashtag"], ["Next", "hashtag"]], [["with", "hashtag"]]]
+
+    # Define a list of expected integer values as counts
     segments_count = [2, 1]
+
+    # Call the function under test and check if returned and expected content match
     assert count_segments_with_feature(segments) == segments_count
 
 
@@ -221,39 +306,62 @@ def test_dataframe1():
     return pd.DataFrame(data)
 
 
+# Test case for sort_descending() function
 def test_sort_descending(test_dataframe1):
+    # Instantiate the column field 'column' and a dataframe 'expected_df'
     column = 'Value'
     expected_df = pd.DataFrame({
         'Text': ['This is a text example.', 'Each text is related to a value.', 'The text with the highest value is '
                                                                                 'displayed at the top.'],
         'Value': [3, 1, 5]
     })
-    expected_df = expected_df.sort_values(by=column, ascending=False)
+
+    # Sort the 'expected_df' dataframe values by the column 'Value' in descending order
+    expected_df = expected_df.sort_values(by='Value', ascending=False)
+
+    # Call the function under test for 'test_dataframe1' and save the result into a variable
     result = sort_descending(test_dataframe1, column)
+
+    # Assert that the result of the function under test and the 'expected_df' variable match
     pd.testing.assert_frame_equal(result, expected_df)
 
 
+# Test case for ratio() function
 def test_ratio():
+    # Assign integer values to the variables 'value_1' and 'value_2'
     value_1 = 27
     value_2 = 85
+
+    # Compute the ratio between the same integer values
     expected_ratio = 27 / 85
+
+    # Call the function under test and check if returned and expected content match
     assert ratio(value_1, value_2) == expected_ratio
 
 
+# Test case for zeta() function
 def test_zeta():
+    # Assign float values to the variables 'ratio_1' and 'ratio_2'
     ratio_1 = 0.32
     ratio_2 = 0.75
+
+    # Compute the difference between the same integer values
     expected_zeta = 0.32 - 0.75
+
+    # Call the function under test and check if returned and expected content match
     assert zeta(ratio_1, ratio_2) == expected_zeta
 
 
+# Test case for fill_dataframe() function
 def test_fill_dataframe():
     # Define an empty dataframe
     df = pd.DataFrame(columns=['A', 'B', 'C'])
 
     # Add values
     values = [1, 'string', 3]
+
+    # Call the function under test and save the result into a variable
     df_updated = fill_dataframe(df, values)
 
-    # Check if the expected values are included within the dataframe
+    # Assert if returned and expected content match
     assert df_updated.equals(pd.DataFrame({'A': [1], 'B': ['string'], 'C': [3]}))
