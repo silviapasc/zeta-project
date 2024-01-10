@@ -99,8 +99,14 @@ def remove_stopwords_corpus(stopwords_list: list, tokens_col: list) -> list:
     return [remove_stopwords(stopwords_list, tokenized_text) for tokenized_text in tokens_col]
 
 
+def replace_pattern_in_column(column: pd.Series, old_pattern: str, new_pattern: str) -> pd.Series:
+    """ Replaces each matching string pattern from dataframe column values with a new
+     pattern, which can be also an empty string. Returns the updated dataframe column"""
+    return column.str.replace(old_pattern, new_pattern, regex=True)
+
+
 # Set a function to build the text segments (ideally 2000-5000 tokens)
-def build_segments(tokens: list, segment_length: int) -> list:
+def build_segments(tokens: list, segment_len: int) -> list:
     """ Builds a series of token sub lists or segments based on the given segment length.
     The segment length corresponds to the number of tokens, each segment is made of.
     """
@@ -108,7 +114,7 @@ def build_segments(tokens: list, segment_length: int) -> list:
     # The value '0' corresponds to the starting point, the total number of tokens – len(tokens) –
     # marks the stop position and the specified number of tokens sets the interval at which
     # the split occurs
-    return [tokens[x: x + segment_length] for x in range(0, len(tokens), segment_length)]
+    return [tokens[x: x + segment_len] for x in range(0, len(tokens), segment_len)]
 
 
 # Build segments for each text of the corpus
@@ -217,9 +223,8 @@ if __name__ == '__main__':
     corpus_path = input("Enter the directory path to the text corpus: ")
     dictionary = define_dictionary(corpus_path)
     df = create_df(dictionary)
-    # Extra to remove file extension suffix and make it match with the metadata table!
-    # Define function?
-    df['idno'] = df['idno'].str.replace('.txt$', '', regex=True)
+    # Extra function to remove file extension suffix and make it match with the metadata table value
+    df['idno'] = replace_pattern_in_column(df['idno'], '.txt$', '')
 
     # Preprocess all the corpus texts
     df['Lowercase Text'] = lowercase_corpus(df.Text)
@@ -293,6 +298,6 @@ if __name__ == '__main__':
 
     # Sort the results dataframe by descending values of zeta
     summary = sort_descending(summary, 'Zeta Value')
-    # Eventually save the definitive dataframe to a csv file
+    # Eventually save the definitive dataframe to a csv file in the current working directory
     # summary.to_csv('zeta-summary.csv')
     print(summary)
