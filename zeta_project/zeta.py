@@ -1,29 +1,16 @@
 # Import the required modules
 import os
 import re
-from typing import Tuple, Any
 
 import pandas as pd
-from pandas import DataFrame, Series
+from pandas import DataFrame
 
 
 # Set the proper working directory path
 def set_cwd(current_path: str) -> str:
     """ The function checks whether the specified path matches the
     current working directory path. If yes, the specified path is returned.
-    Otherwise, the working directory is changed to the specified path.
-
-    Parameters:
-    current_path (str): The desired directory path to which the working directory
-    is eventually to be changed.
-
-    Return value:
-    str: The current working directory path if it matches the specified path.
-    Otherwise, the changed working directory path is returned.
-
-    Note:
-    The function uses the 'os' module, which must be imported for the function to work properly.
-    """
+    Otherwise, the working directory is changed to the specified path."""
     if current_path == os.getcwd():
         return current_path
     else:
@@ -51,7 +38,7 @@ def define_dictionary(specified_path: str) -> dict:
     return {file: read_text(file) for file in os.listdir() if file.endswith(".txt")}
 
 
-# Define a Pandas dataframe from dictionary
+# Define a pandas dataframe from dictionary
 def create_df(corpus_dict: dict) -> pd.DataFrame:
     """ Creates a pandas dataframe from a dictionary defined by define_dictionary().
      The dictionary keys are collected under the 'File Name' column and the values
@@ -105,6 +92,19 @@ def replace_pattern_in_column(column: pd.Series, old_pattern: str, new_pattern: 
     return column.str.replace(old_pattern, new_pattern, regex=True)
 
 
+# Split the dataframe into 2 partitions based on a chosen value from a selected column
+def define_partitions(dataframe: pd.DataFrame, col_name: str, col_value: str) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """ Splits a dataframe into two partitions, one referred to as the 'target partition' and the other
+     as the 'reference partition'. The split is based on the specified dataframe column and a column value,
+     in a way that all the dataframe rows showing that column value are grouped into the target partition,
+     while the remaining rows are grouped into the reference partition. """
+    split_condition = dataframe[col_name] == col_value
+    # Explain the meaning of the copy() method!
+    target_partition = dataframe[split_condition].copy()
+    reference_partition = dataframe[~split_condition].copy()
+    return target_partition, reference_partition
+
+
 # Set a function to build the text segments (ideally 2000-5000 tokens)
 def build_segments(tokens: list, segment_len: int) -> list:
     """ Builds a series of token sub lists or segments based on the given segment length.
@@ -133,51 +133,28 @@ def segments_count(segments_col: pd.Series) -> pd.Series:
     return segments_col.apply(len)
 
 
-# Split the dataframe into 2 partitions based on a chosen value from a selected column
-def define_partitions(dataframe: pd.DataFrame, col_name: str, col_value: str) -> tuple[pd.DataFrame, pd.DataFrame]:
-    """ Splits a dataframe into two partitions, one referred to as the target partition and the other
-     as the reference partition. The split is based on the specified dataframe column and a column value,
-     in a way that all the dataframe rows showing that column value are grouped into the target partition,
-     while the remaining rows are grouped into the reference partition. """
-    split_condition = dataframe[col_name] == col_value
-    # Explain the meaning of the copy() method!
-    target_partition = dataframe[split_condition].copy()
-    reference_partition = dataframe[~split_condition].copy()
-    return target_partition, reference_partition
-
-
-# Consider now these subsets of tokens as the unit to check if the chosen chosen_feature
-# occurs within the texts. If the chosen_feature occurs at least once, this is what matters
+# Consider now these subsets of tokens or segments as the unit to check if the specified feature
+# occurs within the texts. If the chosen feature occurs at least once, this is what matters
 def feature_occurs(segments_list: list, feature: str) -> list:
-    """ Returns a list of those segments containing the specified chosen_feature """
+    """ Returns a list of those segments containing the specified feature """
     result = [segment for segment in segments_list if feature in segment]
     return result
 
 
 def feature_occurs_corpus(segments_column: list, feature: str) -> list:
     """ Returns a list, for each dataframe sample, of only those segments
-    containing the specified chosen_feature """
+    containing the specified feature """
     return [feature_occurs(segments, feature) for segments in segments_column]
 
 
-# After that, count in how many segments (of the partition) the chosen_feature occurs, i.e. totally
-# 'segment_list' can be a list of lists or tuples
-
-# Count the number of segments containing the chosen_feature for each text within the corpus
-# Gives a tuple back with integer value of segments containing chosen_feature
-# and a list of the segments themselves
-# There is a conflict between the total index number of the dataframe
-# and the number of results, because for a single index there can be
-# more results and for some other there is no results
-
-
-# Count the total number of segments containing the chosen_feature for each document
+# Count the total number of segments containing the chosen feature for each document
 def count_segments_with_feature(segments_column: list) -> list[int]:
     """ Returns a list with the total number of segments containing the specified
-    chosen_feature. The total number is referred to each text item """
+    feature. The total number is referred to each text item """
     return [len(segments) for segments in segments_column]
 
 
+# Sum the number of segments containing the specified feature for the whole corpus partition
 def total_count(column_counts: pd.Series) -> int:
     """ Returns the sum of a series of integer values """
     return column_counts.sum()
@@ -191,13 +168,14 @@ def ratio(segments_with_feature_count: int, segments_count: int) -> float:
     return segments_with_feature_count / segments_count
 
 
-# Zeta
+# Compute zeta
 def zeta(ratio_1: float, ratio_2: float) -> float:
     """ Returns the percentage of how consistently the specified feature
     is used within the target partition compared to the reference partition"""
     return ratio_1 - ratio_2
 
 
+# Insert a list of values into a dataframe
 def fill_dataframe(dataframe: pd.DataFrame, values: list) -> pd.DataFrame:
     """ Inserts the specified list of values into the existing dataframe. The number of values
     must correspond to the number of labels in the dataframe"""
@@ -205,9 +183,9 @@ def fill_dataframe(dataframe: pd.DataFrame, values: list) -> pd.DataFrame:
     return dataframe
 
 
-# Within the dataframe/partition sort the samples so that the text item with
-# the highest number of segments containing the chosen_feature figures at the top,
-# and the text with the lowest number of segments containing the chosen_feature is
+# Sort the samples within the dataframe/partition, so that the text item with
+# the highest number of segments containing the specified feature figures at the top,
+# and the text with the lowest number of segments containing the feature is
 # at the bottom
 def sort_descending(dataframe: pd.DataFrame, column: str) -> pd.DataFrame:
     """ Returns a dataframe sorted by the values from the specified column, in descending order """
@@ -217,6 +195,7 @@ def sort_descending(dataframe: pd.DataFrame, column: str) -> pd.DataFrame:
 # Executing as standalone script
 if __name__ == '__main__':
     # First create a dataframe to which append the results
+    # Module 'DataFrame' from pandas is required!
     summary: DataFrame = pd.DataFrame(
         columns=['Feature', 'Target Partition Ratio', 'Reference Partition Ratio', 'Zeta Value'])
 
@@ -229,7 +208,7 @@ if __name__ == '__main__':
     # Preprocess all the corpus texts
     df['Lowercase Text'] = lowercase_corpus(df.Text)
     df['Tokenized Text'] = tokenize_corpus(df['Lowercase Text'])
-    # Remove stopwords if necessary. The stopwords list could be also a file!!!
+    # Remove stopwords if necessary
     # stopwords = input("Add a list of stopwords (empty as default value): ")
     # df['Text No Stopwords'] = remove_stopwords_corpus(list(stopwords), df['Tokenized Text'])
     # Set segments length
