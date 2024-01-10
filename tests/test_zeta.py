@@ -8,7 +8,8 @@ from zeta_project.zeta import (set_cwd, read_text, define_dictionary,
                                tokenize, tokenize_corpus, build_segments,
                                build_segments_corpus, feature_occurs, feature_occurs_corpus,
                                count_segments_with_feature, sort_descending, remove_stopwords,
-                               remove_stopwords_corpus, segments_count, define_partitions,
+                               remove_stopwords_corpus, replace_pattern_in_column,
+                               segments_count, define_partitions,
                                total_count, ratio, zeta, fill_dataframe)
 
 
@@ -139,6 +140,12 @@ def test_remove_stopwords_corpus():
     tokens_col = [['this', 'is', 'a', 'test'], ['and', 'this', 'is', 'another', 'test']]
     expected_result = [['this', 'test'], ['this', 'another', 'test']]
     assert remove_stopwords_corpus(stopwords, tokens_col) == expected_result
+
+
+def test_replace_pattern_in_column():
+    series = pd.Series(['text1.txt', 'text2.pdf', 'text3.txt'])
+    result = replace_pattern_in_column(series, '.txt', '')
+    assert result.equals(pd.Series(['text1', 'text2.pdf', 'text3']))
 
 
 def test_build_segments():
