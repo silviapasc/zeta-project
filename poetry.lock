@@ -381,6 +381,23 @@ files = [
 ]
 
 [[package]]
+name = "en_core_web_sm"
+version = "3.7.1"
+description = "English pipeline optimized for CPU. Components: tok2vec, tagger, parser, senter, ner, attribute_ruler, lemmatizer."
+optional = false
+python-versions = "*"
+files = [
+    {file = "en_core_web_sm-3.7.1.tar.gz", hash = "sha256:1075c2aa2bc2fee105ab6e90a01a5d1a428c9f5b20a1fa003dc2cb6a438d295e"},
+]
+
+[package.dependencies]
+spacy = ">=3.7.2,<3.8.0"
+
+[package.source]
+type = "url"
+url = "https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.7.1/en_core_web_sm-3.7.1.tar.gz"
+
+[[package]]
 name = "exceptiongroup"
 version = "1.2.0"
 description = "Backport of PEP 654 (exception groups)"
@@ -1527,4 +1544,4 @@ wasabi = ">=0.9.1,<1.2.0"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.13"
-content-hash = "6b8bc28de34188eff75c976d85b699607534185e5113c2594ebdcad7a22eea8a"
+content-hash = "3de7d05eda2067e92efcd92b6b17d5602c6ba0f5e7584480ced45f63c6ea2a35"
