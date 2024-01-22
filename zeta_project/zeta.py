@@ -78,28 +78,16 @@ def tokenize_corpus(texts_col: list) -> list:
 # take a string document in input and returns a list of lemmata
 # I can be useful to extract lemmata and POS at the same time, because
 # it takes long
-
-
-def spacy_lemmata(document):
+def lemmata_pos_ner_tag(texts_col):
     nlp = spacy.load("en_core_web_sm")
-    doc = nlp(document)
-    return [token.lemma_ for token in doc]
-
-
-def spacy_pos(document):
-    nlp = spacy.load("en_core_web_sm")
-    doc = nlp(document)
-    return [token.pos_ for token in doc]
-
-
-# Returns Lemmata for each token within the text document
-def corpus_lemmata(texts_col: list) -> list:
-    return [spacy_lemmata(text) for text in texts_col]
-
-
-# Returns Part of Speech for each token within the text document
-def corpus_pos(texts_col: list) -> list:
-    return [spacy_pos(text) for text in texts_col]
+    lemma = []
+    pos = []
+    ner = []
+    for doc in nlp.pipe(texts_col, batch_size=20):
+        lemma.append([token.lemma_ for token in doc])
+        pos.append([token2.pos_ for token2 in doc])
+        ner.append([token3.label_ for token3 in doc.ents])
+    return lemma, pos, ner
 
 
 # Eventually remove stopwords
@@ -238,9 +226,12 @@ if __name__ == '__main__':
     # Preprocess all the corpus texts
     df['Lowercase Text'] = lowercase_corpus(df.Text)
     df['Tokenized Text'] = tokenize_corpus(df['Lowercase Text'])
-    # Define lemmata and Part of Speech
-    df["Lemmata"] = corpus_lemmata(df["Text"])
-    df["POS"] = corpus_pos(df["Text"])
+    # Define lemmata, Part-of-Speech-tags and Named-Entity-Recognition-tags
+    lemmata_and_pos = lemmata_pos_ner_tag(df["Text"])
+    df["Lemmata"] = lemmata_and_pos[0]
+    df["POS"] = lemmata_and_pos[1]
+    df["NER"] = lemmata_and_pos[2]
+    # df["POS"] = corpus_pos(df["Text"])
     # df['Lemmata'] = tokenize_corpus(df.Text)
     # df['PartOfSpeech'] = tokenize_corpus(df.Text)
     # Remove stopwords if necessary
@@ -248,9 +239,9 @@ if __name__ == '__main__':
     # df['Text No Stopwords'] = remove_stopwords_corpus(list(stopwords), df['Tokenized Text'])
     # Set segments length
     segment_length = input("Specify the desired segment length (in tokens): ")
-    # Instead of df['Tokenized Text'], use df["Lemmata"] or df["POS"]
+    # Instead of df['Tokenized Text'], use df["Lemmata"], df["POS"] or df['NER']
     # With df["POS"] you should know the list of possible tags, e.g.
-    df['Segments'] = build_segments_corpus(df['POS'], int(segment_length))
+    df['Segments'] = build_segments_corpus(df['NER'], int(segment_length))
     # df['Segments'] = build_segments_corpus(df['Text No Stopwords'], int(segment_length))
     df['Segments Count'] = segments_count(df['Segments'])
     print(df)
