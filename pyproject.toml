@@ -11,6 +11,8 @@ python = ">=3.10,<3.13"
 pytest = "^7.4.2"
 pandas = "^2.1.1"
 coverage = "^7.3.2"
+sphinx = "^7.2.6"
+spacy = "^3.7.2"
 
 
 [build-system]
