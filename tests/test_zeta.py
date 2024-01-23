@@ -5,12 +5,11 @@ import pytest
 
 from zeta_project.zeta import (set_cwd, read_text, define_dictionary,
                                create_df, lowercase, lowercase_corpus,
-                               tokenize, tokenize_corpus, build_segments,
-                               build_segments_corpus, feature_occurs, feature_occurs_corpus,
-                               count_segments_with_feature, sort_descending, remove_stopwords,
-                               remove_stopwords_corpus, replace_pattern_in_column,
-                               segments_count, define_partitions,
-                               total_count, ratio, zeta, fill_dataframe)
+                               tokenize, tokenize_corpus, lemmata_pos_ner_tag,
+                               build_segments, build_segments_corpus, feature_occurs,
+                               feature_occurs_corpus, count_segments_with_feature, sort_descending,
+                               remove_stopwords, remove_stopwords_corpus, replace_pattern_in_column,
+                               segments_count, define_partitions, total_count, ratio, zeta, fill_dataframe)
 
 
 # Test set_cwd() using the tmp_path fixture, which provides a temporary
@@ -146,6 +145,25 @@ def test_tokenize_corpus():
     assert tokenize_corpus(texts_list) == expected_result
 
 
+# Test case for lemmata_pos_ner_tag() function
+def test_lemmata_pos_ner_tag():
+    # Define a pandas series containing some string texts
+    texts_col = pd.Series(["Mr. Hungerton, her father, really was", "the most tactless person upon earth,"])
+
+    # Define a list of corresponding lemmata, POS and NER tags for each text in the pandas series
+    expected_lemma = [['Mr.', 'Hungerton', ',', 'her', 'father', ',', 'really', 'be'], ['the', 'most', 'tactless', 'person', 'upon', 'earth', ',']]
+    expected_pos = [['PROPN', 'PROPN', 'PUNCT', 'PRON', 'NOUN', 'PUNCT', 'ADV', 'AUX'], ['DET', 'ADV', 'ADJ', 'NOUN', 'SCONJ', 'NOUN', 'PUNCT']]
+    expected_ner = [['PERSON'], []]
+
+    # Call the function under test and assign its results to separate variables
+    actual_lemma, actual_pos, actual_ner = lemmata_pos_ner_tag(texts_col)
+
+    # Check if returned and expected content match
+    assert actual_lemma == expected_lemma
+    assert actual_pos == expected_pos
+    assert actual_ner == expected_ner
+
+
 # Test case for remove_stopwords() function
 def test_remove_stopwords():
     # Define a list of stopwords
@@ -194,7 +212,8 @@ def test_define_partitions(test_dataframe):
     target, reference = define_partitions(test_dataframe, 'Value', 'a')
 
     # Assert that returned and expected content match
-    assert target.equals(pd.DataFrame({'Text': ['Text 1', 'Text 3', 'Text 5'], 'Value': ['a', 'a', 'a']}, index=[0, 2, 4]))
+    assert target.equals(
+        pd.DataFrame({'Text': ['Text 1', 'Text 3', 'Text 5'], 'Value': ['a', 'a', 'a']}, index=[0, 2, 4]))
     assert reference.equals(pd.DataFrame({'Text': ['Text 2', 'Text 4'], 'Value': ['b', 'c']}, index=[1, 3]))
 
 
