@@ -17,14 +17,9 @@ def set_cwd(current_path: str) -> str:
     else:
         return os.chdir(current_path)
 
-    # What if an invalid directory path is selected? Actually a
-    # FileNotFoundError is raised by the following function read_corpus()
-
 
 def read_text(filename: str) -> str:
-    """ Reads the text file content, returning the specified number of bytes.
-    Default -1, which means the whole file"""
-    # How to explain str instead of bytes???
+    """ Reads the text file content, returning the specified number of bytes."""
     with open(filename, 'rt', encoding='utf-8') as file:
         return file.read()
 
@@ -54,7 +49,7 @@ def lowercase(text: str) -> str:
 
 
 def lowercase_corpus(texts_col: list) -> list:
-    """ Converts the corpus texts within the 'Text' column to lowercase."""
+    """ Converts string texts within a list to lowercase."""
     return [lowercase(file) for file in texts_col]
 
 
@@ -68,8 +63,8 @@ def tokenize(text: str) -> list:
 
 # Tokenize lowercase corpus
 def tokenize_corpus(texts_col: list) -> list:
-    """ Tokenizes the string texts within the 'Text' column
-    returning a list of token lists. Punctuation is also removed."""
+    """ Tokenizes the string texts within a list, returning a list
+    of token sub-lists. Punctuation is also removed."""
     return [tokenize(file) for file in texts_col]
 
 
@@ -227,22 +222,19 @@ if __name__ == '__main__':
     # Preprocess all the corpus texts
     df['Lowercase Text'] = lowercase_corpus(df.Text)
     df['Tokenized Text'] = tokenize_corpus(df['Lowercase Text'])
-    # Define lemmata, Part-of-Speech-tags and Named-Entity-Recognition-tags
+    # Define lemmata, Part-of-Speech and Named-Entity-Recognition tags
     lemmata_and_pos = lemmata_pos_ner_tag(df["Text"])
     df["Lemmata"] = lemmata_and_pos[0]
     df["POS"] = lemmata_and_pos[1]
     df["NER"] = lemmata_and_pos[2]
-    # df["POS"] = corpus_pos(df["Text"])
-    # df['Lemmata'] = tokenize_corpus(df.Text)
-    # df['PartOfSpeech'] = tokenize_corpus(df.Text)
     # Remove stopwords if necessary
     # stopwords = input("Add a list of stopwords (empty as default value): ")
     # df['Text No Stopwords'] = remove_stopwords_corpus(list(stopwords), df['Tokenized Text'])
     # Set segments length
     segment_length = input("Specify the desired segment length (in tokens): ")
-    # Instead of df['Tokenized Text'], use df["Lemmata"], df["POS"] or df['NER']
-    # With df["POS"] you should know the list of possible tags, e.g.
-    df['Segments'] = build_segments_corpus(df['NER'], int(segment_length))
+    # Choose alternatively df['Tokenized Text'], df["Lemmata"], df["POS"] or df['NER'] as first parameter of
+    # the "build_segments_corpus()" function, depending on the feature you are going to consider in the analysis
+    df['Segments'] = build_segments_corpus(df['Tokenized Text'], int(segment_length))
     # df['Segments'] = build_segments_corpus(df['Text No Stopwords'], int(segment_length))
     df['Segments Count'] = segments_count(df['Segments'])
     print(df)
