@@ -60,7 +60,7 @@ def lowercase_corpus(texts_col: list) -> list:
 
 def tokenize(text: str) -> list:
     """ Tokenizes a string text returning a list of tokens.
-    Uses the 're' module to remove punctuation"""
+    Uses the 're' module to remove punctuation."""
     new_text = re.sub(r'[^\w\s]', '', text)
     tokens = new_text.split()
     return tokens
@@ -68,17 +68,18 @@ def tokenize(text: str) -> list:
 
 # Tokenize lowercase corpus
 def tokenize_corpus(texts_col: list) -> list:
-    """ Tokenizes the corpus texts within the 'Text' column
-    returning a list of token lists. Punctuation is also removed """
+    """ Tokenizes the string texts within the 'Text' column
+    returning a list of token lists. Punctuation is also removed."""
     return [tokenize(file) for file in texts_col]
 
 
-# Use Spacy to get lemmata
-# import spacy do not forget!
-# take a string document in input and returns a list of lemmata
-# I can be useful to extract lemmata and POS at the same time, because
-# it takes long
-def lemmata_pos_ner_tag(texts_col):
+# Extract lemmata, Part-Of-Speech and Named-Entity-Recognition tags
+# from the string texts using the Spacy library
+def lemmata_pos_ner_tag(texts_col: pd.Series) -> list:
+    """ Tokenizes the string texts within a pandas series and returns lemmata,
+    Part-Of-Speech (POS) and Named-Entity-Recognition (NER) tags within
+    separate lists. The functionality is based on the SpaCy library, which
+    has to be imported before, and relies on the specific model 'en_core_web_sm'."""
     nlp = spacy.load("en_core_web_sm")
     lemma = []
     pos = []
