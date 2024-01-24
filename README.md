@@ -2,7 +2,7 @@
 
 Das Zeta-Projekt implementiert einfache Funktionen in Python zur Berechnung von Burrows' Zeta, einer in der Computerlinguistik gebräuchlichen Maßeinheit zum Lesen von kontrastierenden Textkorpora.
 
-In der Tatsache können Nutzer:innen anhand der einzelnen Funktionen Texte tokenisieren, lemmatisieren, POS- und NER-Tags aus den Texten extrahieren, Listen von Tokens segmentieren, Stoppwörter und uninteressante Werte filtern, Ergebnisse sortieren. Alternativ kann das Skript auch als eigenständiges Programm ausgeführt werden, wobei die zur Berechnung der Zeta-Werte erforderlichen Daten direkt von den Benutzern:innen eingegeben werden.
+In der Tatsache können Nutzer:innen anhand der einzelnen Funktionen Texte tokenisieren, lemmatisieren, den Tokens POS- und NER-Tags zuweisen, Listen von Tokens segmentieren, Stoppwörter und uninteressante Werte filtern, Ergebnisse sortieren. Alternativ kann das Skript auch als eigenständiges Programm ausgeführt werden, wobei die zur Berechnung der Zeta-Werte erforderlichen Daten direkt von den Benutzern:innen eingegeben werden.
 
 ## Dokumentation
 
