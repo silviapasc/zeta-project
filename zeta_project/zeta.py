@@ -39,7 +39,6 @@ def create_df(corpus_dict: dict) -> pd.DataFrame:
     """ Creates a pandas dataframe from a dictionary defined by define_dictionary().
      The dictionary keys are collected under the 'File Name' column and the values
      under the 'Text' column."""
-    # add some if-raise-conditions? Consider exceptions
     return pd.DataFrame(corpus_dict.items(), columns=['idno', 'Text'])
 
 
