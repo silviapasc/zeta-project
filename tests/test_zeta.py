@@ -356,6 +356,9 @@ def test_ratio():
 
     # Call the function under test and check if returned and expected content match
     assert ratio(value_1, value_2) == expected_ratio
+    with pytest.raises(ZeroDivisionError) as NoZeroDivision:
+        ratio(value_1, 0)
+        assert NoZeroDivision.value == "Division by zero is not allowed"
 
 
 # Test case for zeta() function

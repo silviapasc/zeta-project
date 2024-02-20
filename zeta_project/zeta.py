@@ -189,7 +189,10 @@ def total_count(column_counts: pd.Series) -> int:
 def ratio(segments_with_feature_count: int, segments_count: int) -> float:
     """ Returns the percentage of segments containing the specified feature
     over all segments of a partition"""
-    return segments_with_feature_count / segments_count
+    try:
+        return segments_with_feature_count / segments_count
+    except ZeroDivisionError:
+        raise ZeroDivisionError("Division by zero is not allowed")
 
 
 # Compute zeta
