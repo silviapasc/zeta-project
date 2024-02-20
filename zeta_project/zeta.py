@@ -12,10 +12,13 @@ def set_cwd(current_path: str) -> str:
     """ The function checks whether the specified path matches the
     current working directory path. If yes, the specified path is returned.
     Otherwise, the working directory is changed to the specified path."""
-    if current_path == os.getcwd():
-        return current_path
-    else:
-        return os.chdir(current_path)
+    try:
+        if current_path == os.getcwd():
+            return current_path
+        else:
+            return os.chdir(current_path)
+    except FileNotFoundError:
+        raise FileNotFoundError("Invalid path")
 
 
 def read_text(filename: str) -> str:
