@@ -197,6 +197,14 @@ def test_replace_pattern_in_column():
     assert result.equals(pd.Series(['text1', 'text2.pdf', 'text3']))
 
 
+# Create a test dataframe for test_define_partitions()
+@pytest.fixture
+def test_dataframe():
+    data = {'Text': ['Text 1', 'Text 2', 'Text 3', 'Text 4', 'Text 5'],
+            'Value': ['a', 'b', 'a', 'c', 'a']}
+    return pd.DataFrame(data)
+
+
 # Test case for define_partitions() function
 def test_define_partitions(test_dataframe):
     # Call the function under test and save the result into a variables pair
@@ -249,14 +257,6 @@ def test_segments_count():
 
 
 # Test case for total_count() function
-# Create a test dataframe for this test case
-@pytest.fixture
-def test_dataframe():
-    data = {'Text': ['Text 1', 'Text 2', 'Text 3', 'Text 4', 'Text 5'],
-            'Value': ['a', 'b', 'a', 'c', 'a']}
-    return pd.DataFrame(data)
-
-
 def test_total_count():
     # Define a pandas series of integer values
     single_counts = pd.Series([1, 2, 3, 4, 5])
