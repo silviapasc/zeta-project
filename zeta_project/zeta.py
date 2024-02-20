@@ -130,7 +130,10 @@ def build_segments(tokens: list, segment_len: int) -> list:
     # The value '0' corresponds to the starting point, the total number of tokens – len(tokens) –
     # marks the stop position and the specified number of tokens sets the interval at which
     # the split occurs
-    return [tokens[x: x + segment_len] for x in range(0, len(tokens), segment_len)]
+    try:
+        return [tokens[x: x + segment_len] for x in range(0, len(tokens), segment_len)]
+    except ValueError:
+        raise ValueError("Segment length cannot be zero")
 
 
 # Build segments for each text of the corpus
