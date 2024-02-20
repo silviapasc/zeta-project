@@ -179,6 +179,8 @@ def count_segments_with_feature(segments_column: list) -> list[int]:
 # Sum the number of segments containing the specified feature for the whole corpus partition
 def total_count(column_counts: pd.Series) -> int:
     """ Returns the sum of a series of integer values """
+    if column_counts.dtype == float:
+        raise TypeError("Floating point values not allowed")
     return column_counts.sum()
 
 

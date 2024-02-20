@@ -272,6 +272,9 @@ def test_total_count():
 
     # Call the function under test and check if returned and expected content match
     assert total_count(single_counts) == expected_result
+    with pytest.raises(TypeError) as NoFloat:
+        total_count(pd.Series([0.1, 0.2, 3, 4, 5]))
+        assert NoFloat.type == "Floating point values not allowed"
 
 
 # Test case for feature_occurs() function
