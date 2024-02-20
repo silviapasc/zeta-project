@@ -141,7 +141,10 @@ def build_segments_corpus(tokens_lists: list, segment_len: int) -> list:
     """ Builds a list of token segments from each tokens list, in which
     the corpus texts are split into. The argument 'segment_len' specifies
     the number of tokens to be included in each segment """
-    return [build_segments(tokenized, segment_len) for tokenized in tokens_lists]
+    try:
+        return [build_segments(tokenized, segment_len) for tokenized in tokens_lists]
+    except ValueError:
+        raise ValueError("Segment length cannot be zero")
 
 
 # Count total number of segments for each text

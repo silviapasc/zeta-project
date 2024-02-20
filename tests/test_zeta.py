@@ -247,6 +247,9 @@ def test_build_segments_corpus():
 
     # Call the function under test and assert that returned and expected content match
     assert build_segments_corpus(tokens_lists, segment_len) == expected_result
+    with pytest.raises(ValueError) as NoZeroValue:
+        build_segments(tokens_lists, 0)
+        assert NoZeroValue.value == "Segment length cannot be zero"
 
 
 # Test case for segments_count() function
