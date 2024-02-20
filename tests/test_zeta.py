@@ -22,6 +22,9 @@ def test_set_cwd(tmp_path):
     # Test when the specified path is different from os.getcwd()
     new_path = tmp_path
     assert set_cwd(new_path) == os.chdir(new_path)
+    with pytest.raises(FileNotFoundError) as invalidPath:
+        set_cwd("InvalidPath")
+        assert invalidPath.value == "InvalidPath"
 
 
 def test_read_text():
