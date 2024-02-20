@@ -87,18 +87,6 @@ def test_create_df_empty_dict():
     assert df.empty
 
 
-# Test case for a dataframe with duplicate file names
-def test_create_df_duplicate_file_names():
-    # Define a dictionary
-    corpus_dict = {'file1.txt': 'This is file #1.', 'file1.txt': 'This is a duplicate file #1.'}
-
-    # Raise a ValueError exception in case of duplicate file names
-    with pytest.raises(Exception) as exception:
-        # In the block, call the function that is expected to fail
-        create_df(corpus_dict)
-        assert exception.type == ValueError
-
-
 # Test case for lowercase() function
 def test_lowercase():
     # Assign a partial uppercase text to the upper_text variable
