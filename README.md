@@ -19,7 +19,7 @@ Zum Beispiel kann das Paket direkt aus seinem Git-Repository wie folgt installie
 pip install zeta-project@git+https://github.com/silviapasc/zeta-project
 ```
 
-Es wird außerdem empfohlen, eine virtuelle Umgebung einzurichten, in der das installierte Paket gespeichert wird.
+Es wird außerdem empfohlen, eine isolierte Entwicklungsumgebung einzurichten, in der das installierte Paket gespeichert wird.
 
 ## Lizenz
 
